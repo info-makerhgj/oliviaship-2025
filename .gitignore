@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+OliviaShip-Expo-App/node_modules/
+OliviaShip-Mobile-App/node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# Build outputs
+dist/
+build/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Expo
+OliviaShip-Expo-App/.expo/
+OliviaShip-Expo-App/dist/
+
+# Misc
+*.swp
+*.swo
+*~
+.cache/

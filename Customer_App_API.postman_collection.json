@@ -1,0 +1,335 @@
+{
+  "info": {
+    "name": "Olivia Ship - Customer App API",
+    "description": "API Collection for Customer Mobile App Only",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://192.168.1.111:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"أحمد محمد\",\n  \"email\": \"ahmed@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"777123456\",\n  \"address\": \"صنعاء، شارع الزبيري\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"]}
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ahmed@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"]}
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"أحمد محمد علي\",\n  \"phone\": \"777999888\",\n  \"address\": \"صنعاء، حي السبعين\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/profile", "host": ["{{baseUrl}}"], "path": ["auth", "profile"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Home & Products",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{baseUrl}}/settings", "host": ["{{baseUrl}}"], "path": ["settings"]}
+          }
+        },
+        {
+          "name": "Fetch Product from URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://www.amazon.sa/dp/B08N5WRWNW\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/products/fetch-from-url", "host": ["{{baseUrl}}"], "path": ["products", "fetch-from-url"]}
+          }
+        },
+        {
+          "name": "Calculate Cost",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 899.00,\n  \"currency\": \"SAR\",\n  \"weight\": 0.5,\n  \"quantity\": 1\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/products/calculate-cost", "host": ["{{baseUrl}}"], "path": ["products", "calculate-cost"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Cart",
+      "item": [
+        {
+          "name": "Get Cart",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/cart", "host": ["{{baseUrl}}"], "path": ["cart"]}
+          }
+        },
+        {
+          "name": "Add to Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://www.amazon.sa/dp/B08N5WRWNW\",\n  \"quantity\": 1,\n  \"options\": {\n    \"color\": \"أبيض\"\n  }\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/cart/fetch-and-add", "host": ["{{baseUrl}}"], "path": ["cart", "fetch-and-add"]}
+          }
+        },
+        {
+          "name": "Update Quantity",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/cart/items/:itemId/quantity", "host": ["{{baseUrl}}"], "path": ["cart", "items", ":itemId", "quantity"]}
+          }
+        },
+        {
+          "name": "Remove Item",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/cart/items/:itemId", "host": ["{{baseUrl}}"], "path": ["cart", "items", ":itemId"]}
+          }
+        },
+        {
+          "name": "Checkout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shippingAddress\": {\n    \"fullName\": \"أحمد محمد علي\",\n    \"phone\": \"777123456\",\n    \"city\": \"صنعاء\",\n    \"address\": \"شارع الزبيري، بجوار مستشفى الثورة\"\n  },\n  \"paymentMethod\": \"stripe\",\n  \"couponCode\": \"DISCOUNT10\",\n  \"notes\": \"يرجى التوصيل في المساء\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/cart/checkout", "host": ["{{baseUrl}}"], "path": ["cart", "checkout"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Orders",
+      "item": [
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/orders?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["orders"], "query": [{"key": "page", "value": "1"}, {"key": "limit", "value": "10"}]}
+          }
+        },
+        {
+          "name": "Get Order Details",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/orders/:orderId", "host": ["{{baseUrl}}"], "path": ["orders", ":orderId"]}
+          }
+        },
+        {
+          "name": "Track Order",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{baseUrl}}/orders/track/:orderNumber", "host": ["{{baseUrl}}"], "path": ["orders", "track", ":orderNumber"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Wallet",
+      "item": [
+        {
+          "name": "Get Balance",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/wallet", "host": ["{{baseUrl}}"], "path": ["wallet"]}
+          }
+        },
+        {
+          "name": "Get Transactions",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/wallet/transactions?page=1&limit=10", "host": ["{{baseUrl}}"], "path": ["wallet", "transactions"], "query": [{"key": "page", "value": "1"}, {"key": "limit", "value": "10"}]}
+          }
+        },
+        {
+          "name": "Redeem Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"WALLET-ABC123\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/wallet/redeem-code", "host": ["{{baseUrl}}"], "path": ["wallet", "redeem-code"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Points of Sale",
+      "item": [
+        {
+          "name": "Get Nearest Points",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{baseUrl}}/pos/nearest?lat=15.3694&lng=44.1910&radius=10", "host": ["{{baseUrl}}"], "path": ["pos", "nearest"], "query": [{"key": "lat", "value": "15.3694"}, {"key": "lng", "value": "44.1910"}, {"key": "radius", "value": "10"}]}
+          }
+        },
+        {
+          "name": "Get All Points",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{baseUrl}}/pos/public", "host": ["{{baseUrl}}"], "path": ["pos", "public"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Coupons",
+      "item": [
+        {
+          "name": "Get Active Coupons",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {"raw": "{{baseUrl}}/coupons/active", "host": ["{{baseUrl}}"], "path": ["coupons", "active"]}
+          }
+        },
+        {
+          "name": "Validate Coupon",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"DISCOUNT10\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/coupons/validate", "host": ["{{baseUrl}}"], "path": ["coupons", "validate"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Chat Support",
+      "item": [
+        {
+          "name": "Get My Chat",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{token}}"}],
+            "url": {"raw": "{{baseUrl}}/chat/my-chat", "host": ["{{baseUrl}}"], "path": ["chat", "my-chat"]}
+          }
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{token}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"chatId\": \"chat_id_here\",\n  \"message\": \"أحتاج مساعدة في طلبي\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/chat/send", "host": ["{{baseUrl}}"], "path": ["chat", "send"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Contact",
+      "item": [
+        {
+          "name": "Send Contact Message",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"أحمد محمد\",\n  \"email\": \"ahmed@example.com\",\n  \"phone\": \"777123456\",\n  \"subject\": \"استفسار عن الشحن\",\n  \"message\": \"أريد معرفة تكلفة الشحن إلى عدن\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/contact", "host": ["{{baseUrl}}"], "path": ["contact"]}
+          }
+        }
+      ]
+    }
+  ]
+}

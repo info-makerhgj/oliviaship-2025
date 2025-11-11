@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Default pastel colors - will be overridden by theme settings */
+  --primary-color: #93c5fd;
+  --secondary-color: #f9a8d4;
+  --primary-hover: #60a5fa;
+  --secondary-hover: #f472b6;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Cairo', 'Tajawal', Arial, sans-serif;
+  direction: rtl;
+  text-align: right;
+  background: #f9fafb;
+  position: relative;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Force English numerals */
+* {
+  font-variant-numeric: tabular-nums;
+}
+
+input, textarea, select {
+  font-variant-numeric: tabular-nums;
+}
+
+@layer components {
+  .btn-primary {
+    background-color: var(--primary-color);
+    @apply hover:opacity-90 text-white font-medium text-sm md:text-base py-2 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+  }
+  
+  .btn-primary:hover {
+    background-color: var(--primary-hover);
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium text-sm md:text-base py-2 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg;
+  }
+  
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium text-sm md:text-base py-2 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg;
+  }
+  
+  .btn-outline {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    @apply border-2 hover:text-white font-medium text-sm md:text-base py-2 px-4 rounded-lg transition-all duration-300;
+  }
+  
+  .btn-outline:hover {
+    background-color: var(--primary-color);
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl transition-all duration-300 bg-white;
+  }
+  
+  .input-field:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 10%, transparent);
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl shadow-lg p-6 border border-gray-100;
+  }
+  
+  .card-hover {
+    @apply card hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1;
+  }
+  
+  .gradient-primary {
+    background: linear-gradient(to left, var(--primary-color), var(--primary-hover));
+  }
+  
+  .gradient-secondary {
+    background: linear-gradient(to left, var(--secondary-color), var(--secondary-hover));
+  }
+  
+  .text-gradient {
+    background: linear-gradient(to left, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  /* Dynamic color classes */
+  .bg-primary-dynamic {
+    background-color: var(--primary-color);
+  }
+  
+  .text-primary-dynamic {
+    color: var(--primary-color);
+  }
+  
+  .border-primary-dynamic {
+    border-color: var(--primary-color);
+  }
+  
+  .bg-secondary-dynamic {
+    background-color: var(--secondary-color);
+  }
+  
+  .text-secondary-dynamic {
+    color: var(--secondary-color);
+  }
+  
+  .gradient-dynamic {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari and Opera */
+  }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-scale-in {
+  animation: scale-in 0.3s ease-out;
+}
+
+/* Force English/Western numerals everywhere */
+body, input, textarea, select, button, div, span, p, h1, h2, h3, h4, h5, h6, td, th, li {
+  font-variant-numeric: lining-nums;
+  -moz-font-feature-settings: "lnum" 1;
+  -webkit-font-feature-settings: "lnum" 1;
+  font-feature-settings: "lnum" 1;
+}
+
+/* Additional CSS to force Western numerals */
+@supports (font-variant-numeric: lining-nums) {
+  * {
+    font-variant-numeric: lining-nums;
+  }
+}

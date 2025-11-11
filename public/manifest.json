@@ -1,0 +1,44 @@
+{
+  "name": "Olivia Ship - أوليفيا شيب",
+  "short_name": "Olivia Ship",
+  "description": "منصة التوصيل الفاخر من المتاجر العالمية إلى اليمن",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["shopping", "business"],
+  "lang": "ar",
+  "dir": "rtl",
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "طلب جديد",
+      "short_name": "طلب",
+      "description": "إضافة منتج جديد للطلب",
+      "url": "/order",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "السلة",
+      "short_name": "السلة",
+      "description": "عرض السلة",
+      "url": "/cart",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}
+
+
+
+
+
+
