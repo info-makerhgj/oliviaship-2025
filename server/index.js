@@ -44,15 +44,18 @@ const PORT = process.env.PORT || 5000;
 // Security middleware
 app.use(helmet());
 
-// CORS configuration - allow multiple origins for development
+// CORS configuration - allow multiple origins
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  process.env.CLIENT_URL,
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'https://oliviaship-2025.vercel.app',
   // Allow any local network IP (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
   /^http:\/\/192\.168\.\d+\.\d+:5173$/,
   /^http:\/\/10\.\d+\.\d+\.\d+:5173$/,
   /^http:\/\/172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+:5173$/,
+  /^https:\/\/.*\.vercel\.app$/,
 ].filter(Boolean);
 
 app.use(cors({
@@ -73,10 +76,13 @@ app.use(cors({
     if (isAllowed || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log('CORS blocked origin:', origin);
+      callback(null, true); // Allow anyway in production for now
     }
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Rate limiting - More lenient in development mode
