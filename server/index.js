@@ -35,6 +35,7 @@ import chatRoutes from './routes/chat.js';
 import reportRoutes from './routes/reports.js';
 import invoiceRoutes from './routes/invoices.js';
 import setupRoutes from './routes/setup.js';
+import healthCheckRoutes from './health-check.js';
 
 // Import error handler
 import { errorHandler } from './middleware/errorHandler.js';
@@ -174,6 +175,9 @@ app.use('/api/auth', authLimiter);
 app.use('/api/cart', cartLimiter);
 app.use('/api/products', cartLimiter); // Same for products since they're used frequently
 app.use('/api/', generalLimiter);
+
+// Health check routes (no rate limiting)
+app.use('/api', healthCheckRoutes);
 
 // Routes
 app.use('/api/auth', authRoutes);
