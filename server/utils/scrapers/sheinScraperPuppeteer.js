@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+// import puppeteer from 'puppeteer'; // Disabled for Railway deployment
 import Settings from '../../models/Settings.js';
 
 /**
@@ -7,6 +7,10 @@ import Settings from '../../models/Settings.js';
  * مثل المتصفح الحقيقي - أدق وأقوى من ScraperAPI
  */
 export const scrapeSheinPuppeteer = async (url) => {
+  // Puppeteer disabled for Railway deployment
+  throw new Error('Puppeteer scraping temporarily disabled - not configured on Railway');
+  
+  /* DISABLED FOR RAILWAY
   const startTime = Date.now();
   let browser = null;
 
