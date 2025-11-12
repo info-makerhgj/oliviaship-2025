@@ -1,0 +1,12 @@
+# Ignore frontend files on Railway (backend only)
+src/
+public/
+index.html
+vite.config.js
+tailwind.config.js
+postcss.config.js
+*.md
+.git/
+.github/
+node_modules/
+dist/

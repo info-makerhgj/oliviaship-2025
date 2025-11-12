@@ -8,7 +8,7 @@
           "nixPkgs": ["nodejs_20"]
         },
         "install": {
-          "cmds": ["npm install"]
+          "cmds": ["npm install --production --ignore-scripts"]
         }
       },
       "start": {
