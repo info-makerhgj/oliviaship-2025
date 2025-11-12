@@ -89,4 +89,47 @@ router.get('/list-users', async (req, res) => {
   }
 });
 
+// Test login - bypasses password check (REMOVE IN PRODUCTION!)
+router.post('/test-login', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: 'Email required' });
+    }
+
+    const user = await User.findOne({ email });
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Generate token without password check
+    const jwt = await import('jsonwebtoken');
+    const token = jwt.default.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '30d' }
+    );
+
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        permissions: user.permissions
+      }
+    });
+  } catch (error) {
+    console.error('Test login error:', error);
+    res.status(500).json({ 
+      message: 'Error in test login',
+      error: error.message 
+    });
+  }
+});
+
 export default router;
