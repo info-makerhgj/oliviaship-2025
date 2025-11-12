@@ -11,6 +11,17 @@
   ],
   "routes": [
     {
+      "src": "/manifest.json",
+      "dest": "/manifest.json",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate"
+      }
+    },
+    {
+      "src": "/favicon.(svg|ico|png)",
+      "dest": "/$0"
+    },
+    {
       "src": "/assets/(.*)",
       "dest": "/assets/$1"
     },

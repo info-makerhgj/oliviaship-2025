@@ -51,6 +51,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'https://oliviaship-2025.vercel.app',
+  'https://oliviaship-2025-olivia-ships-projects.vercel.app',
   // Allow any local network IP (192.168.x.x, 10.x.x.x, 172.16-31.x.x)
   /^http:\/\/192\.168\.\d+\.\d+:5173$/,
   /^http:\/\/10\.\d+\.\d+\.\d+:5173$/,
