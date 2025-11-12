@@ -4,6 +4,30 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 export default defineConfig({
+  build: {
+    // تحسينات للسرعة
+    target: 'es2015',
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // إزالة console.log في الإنتاج
+        drop_debugger: true
+      }
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // فصل المكتبات الكبيرة
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'chart-vendor': ['recharts'],
+          'icons': ['react-icons'],
+          'utils': ['axios', 'zustand']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000,
+    cssCodeSplit: true
+  },
   plugins: [
     react(),
     VitePWA({

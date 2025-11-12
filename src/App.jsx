@@ -1,59 +1,70 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/authStore';
 import ErrorBoundary from './components/ErrorBoundary';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 
-// Layouts
+// Loading Component
+const LoadingFallback = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+);
+
+// Layouts - Keep these as regular imports (small files)
 import MainLayout from './components/layouts/MainLayout';
 import DashboardLayout from './components/layouts/DashboardLayout';
 
+// Lazy load all pages
 // Public Pages
-import HomePage from './pages/public/HomePage';
-import OrderPage from './pages/public/OrderPage';
-import TrackingPage from './pages/public/TrackingPage';
-import AboutPage from './pages/public/AboutPage';
-import ContactPage from './pages/public/ContactPage';
-import TermsPage from './pages/public/TermsPage';
-import PrivacyPage from './pages/public/PrivacyPage';
-import CookiesPage from './pages/public/CookiesPage';
-import PointsPage from './pages/public/PointsPage';
-import LoginPage from './pages/auth/LoginPage';
-import RegisterPage from './pages/auth/RegisterPage';
-import CartPage from './pages/public/CartPage';
+const HomePage = lazy(() => import('./pages/public/HomePage'));
+const OrderPage = lazy(() => import('./pages/public/OrderPage'));
+const TrackingPage = lazy(() => import('./pages/public/TrackingPage'));
+const AboutPage = lazy(() => import('./pages/public/AboutPage'));
+const ContactPage = lazy(() => import('./pages/public/ContactPage'));
+const TermsPage = lazy(() => import('./pages/public/TermsPage'));
+const PrivacyPage = lazy(() => import('./pages/public/PrivacyPage'));
+const CookiesPage = lazy(() => import('./pages/public/CookiesPage'));
+const PointsPage = lazy(() => import('./pages/public/PointsPage'));
+const LoginPage = lazy(() => import('./pages/auth/LoginPage'));
+const RegisterPage = lazy(() => import('./pages/auth/RegisterPage'));
+const CartPage = lazy(() => import('./pages/public/CartPage'));
+const StoresPage = lazy(() => import('./pages/public/StoresPage'));
 
 // Customer Pages
-import CustomerDashboard from './pages/customer/Dashboard';
-import MyOrders from './pages/customer/MyOrders';
-import OrderDetails from './pages/customer/OrderDetails';
-import WalletPage from './pages/customer/WalletPage';
-import ProfilePage from './pages/customer/ProfilePage';
-import CustomerChat from './pages/customer/Chat';
-import ContactReplies from './pages/customer/ContactReplies';
-import StoresPage from './pages/public/StoresPage';
+const CustomerDashboard = lazy(() => import('./pages/customer/Dashboard'));
+const MyOrders = lazy(() => import('./pages/customer/MyOrders'));
+const OrderDetails = lazy(() => import('./pages/customer/OrderDetails'));
+const WalletPage = lazy(() => import('./pages/customer/WalletPage'));
+const ProfilePage = lazy(() => import('./pages/customer/ProfilePage'));
+const CustomerChat = lazy(() => import('./pages/customer/Chat'));
+const ContactReplies = lazy(() => import('./pages/customer/ContactReplies'));
 
 // Admin Pages
-import AdminDashboard from './pages/admin/Dashboard';
-import AdminOrders from './pages/admin/Orders';
-import AdminUsers from './pages/admin/Users';
-import AdminSettings from './pages/admin/Settings';
-import AdminReports from './pages/admin/Reports';
-import AdminInvoices from './pages/admin/Invoices';
-import AdminPayments from './pages/admin/Payments';
-import AdminRoles from './pages/admin/Roles';
-import AdminContactMessages from './pages/admin/ContactMessages';
-import AdminChat from './pages/admin/AdminChat';
-import AdminCoupons from './pages/admin/Coupons';
-import WalletCodes from './pages/admin/WalletCodes';
-import Wallets from './pages/admin/Wallets';
-import PointsOfSale from './pages/admin/PointsOfSale';
-import Agents from './pages/admin/Agents';
-import AgentPayments from './pages/admin/AgentPayments';
-import PointDashboard from './pages/pos/PointDashboard';
-import PointManagerRedirect from './pages/pos/PointManagerRedirect';
-import AgentDashboard from './pages/agent/AgentDashboard';
-import AgentCustomers from './pages/agent/AgentCustomers';
-import AgentOrders from './pages/agent/AgentOrders';
-import AgentCommissions from './pages/agent/AgentCommissions';
+const AdminDashboard = lazy(() => import('./pages/admin/Dashboard'));
+const AdminOrders = lazy(() => import('./pages/admin/Orders'));
+const AdminUsers = lazy(() => import('./pages/admin/Users'));
+const AdminSettings = lazy(() => import('./pages/admin/Settings'));
+const AdminReports = lazy(() => import('./pages/admin/Reports'));
+const AdminInvoices = lazy(() => import('./pages/admin/Invoices'));
+const AdminPayments = lazy(() => import('./pages/admin/Payments'));
+const AdminRoles = lazy(() => import('./pages/admin/Roles'));
+const AdminContactMessages = lazy(() => import('./pages/admin/ContactMessages'));
+const AdminChat = lazy(() => import('./pages/admin/AdminChat'));
+const AdminCoupons = lazy(() => import('./pages/admin/Coupons'));
+const WalletCodes = lazy(() => import('./pages/admin/WalletCodes'));
+const Wallets = lazy(() => import('./pages/admin/Wallets'));
+const PointsOfSale = lazy(() => import('./pages/admin/PointsOfSale'));
+const Agents = lazy(() => import('./pages/admin/Agents'));
+const AgentPayments = lazy(() => import('./pages/admin/AgentPayments'));
+
+// POS & Agent Pages
+const PointDashboard = lazy(() => import('./pages/pos/PointDashboard'));
+const PointManagerRedirect = lazy(() => import('./pages/pos/PointManagerRedirect'));
+const AgentDashboard = lazy(() => import('./pages/agent/AgentDashboard'));
+const AgentCustomers = lazy(() => import('./pages/agent/AgentCustomers'));
+const AgentOrders = lazy(() => import('./pages/agent/AgentOrders'));
+const AgentCommissions = lazy(() => import('./pages/agent/AgentCommissions'));
 
 // Private Route Component
 const PrivateRoute = ({ children }) => {
@@ -75,7 +86,8 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <Routes>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
       {/* Public Routes */}
       <Route path="/" element={<MainLayout />}>
         <Route index element={<HomePage />} />
@@ -142,7 +154,8 @@ function App() {
 
       {/* 404 */}
       <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+        </Routes>
+      </Suspense>
     </ErrorBoundary>
   );
 }
