@@ -64,6 +64,8 @@ app.use(cors({
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     
+    console.log('🔍 CORS Request from origin:', origin);
+    
     // Check if origin matches any allowed pattern
     const isAllowed = allowedOrigins.some(allowed => {
       if (typeof allowed === 'string') {
@@ -74,17 +76,42 @@ app.use(cors({
       return false;
     });
     
-    if (isAllowed || process.env.NODE_ENV === 'development') {
+    if (isAllowed) {
+      console.log('✅ CORS Allowed:', origin);
+      callback(null, true);
+    } else if (process.env.NODE_ENV === 'development') {
+      console.log('✅ CORS Allowed (development mode):', origin);
       callback(null, true);
     } else {
-      console.log('CORS blocked origin:', origin);
+      console.log('⚠️ CORS origin not in allowed list, but allowing anyway:', origin);
+      console.log('📋 Allowed origins:', allowedOrigins);
       callback(null, true); // Allow anyway in production for now
     }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Content-Range', 'X-Content-Range'],
+  maxAge: 600, // 10 minutes
 }));
+
+// Additional CORS headers middleware (backup)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  }
+  
+  // Handle preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
 
 // Rate limiting - More lenient in development mode
 const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
