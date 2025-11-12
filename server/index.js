@@ -34,6 +34,7 @@ import contactRoutes from './routes/contact.js';
 import chatRoutes from './routes/chat.js';
 import reportRoutes from './routes/reports.js';
 import invoiceRoutes from './routes/invoices.js';
+import setupRoutes from './routes/setup.js';
 
 // Import error handler
 import { errorHandler } from './middleware/errorHandler.js';
@@ -195,6 +196,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/chat', chatRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/setup', setupRoutes);
 
 // Error handler (must be last)
 app.use(errorHandler);
