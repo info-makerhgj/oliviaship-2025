@@ -151,7 +151,21 @@ app.use('/uploads', express.static(join(__dirname, '../uploads')));
 
 // Health check (no rate limiting)
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Server is running' });
+  const dbStatus = mongoose.connection.readyState;
+  const dbStatusText = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  }[dbStatus] || 'unknown';
+  
+  res.json({ 
+    status: 'OK', 
+    message: 'Server is running',
+    database: dbStatusText,
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Apply rate limiters (after health check)
@@ -225,15 +239,15 @@ const connectDB = async () => {
   } catch (error) {
     console.error('❌ MongoDB connection error:', error);
     console.error('   Make sure MongoDB is running and MONGODB_URI is correct');
-    // Don't exit in development - allow server to start even if DB fails
-    if (process.env.NODE_ENV === 'production') {
-      process.exit(1);
-    } else {
-      console.warn('⚠️ Continuing without database connection (development mode)');
-      app.listen(PORT, '0.0.0.0', () => {
-        console.log(`🚀 Server running on port ${PORT} (without DB)`);
-      });
-    }
+    console.error('   MongoDB URI:', process.env.MONGODB_URI ? 'Set (hidden)' : 'NOT SET');
+    
+    // Start server anyway to show health check and allow debugging
+    console.warn('⚠️ Starting server without database connection');
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${PORT} (without DB)`);
+      console.log(`⚠️ WARNING: MongoDB not connected - some features will not work`);
+      console.log(`🌐 Frontend: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+    });
   }
 };
 
