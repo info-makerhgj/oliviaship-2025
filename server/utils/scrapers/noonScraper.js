@@ -15,8 +15,15 @@ export const scrapeNoon = async (url) => {
     
     let html = '';
     
+    // التحقق من وجود SCRAPERAPI_KEY وأنه ليس القيمة الافتراضية
+    const hasValidScraperKey = process.env.SCRAPERAPI_KEY && 
+                                process.env.SCRAPERAPI_KEY !== 'your_scraperapi_key' &&
+                                process.env.SCRAPERAPI_KEY.length > 10;
+    
+    console.log(`🔑 ScraperAPI Key status: ${hasValidScraperKey ? 'Valid' : 'Invalid or missing'}`);
+    
     // استخدام ScraperAPI مباشرة لتجنب الحظر - نون يحتاج render
-    if (process.env.SCRAPERAPI_KEY) {
+    if (hasValidScraperKey) {
       try {
         console.log('🚀 Using ScraperAPI for Noon with render');
         const response = await axios.get('http://api.scraperapi.com', {
@@ -51,9 +58,11 @@ export const scrapeNoon = async (url) => {
           console.log(`❌ ScraperAPI fallback also failed: ${fallbackError.message}`);
         }
       }
-    } else {
-      // إذا لم يكن ScraperAPI موجود، استخدم الطريقة المباشرة
-      console.log('⚠️ SCRAPERAPI_KEY not found, using direct request');
+    }
+    
+    // إذا لم ينجح ScraperAPI أو لم يكن موجود، استخدم الطريقة المباشرة
+    if (!html || html.length < 100) {
+      console.log('⚠️ Trying direct request to Noon...');
       try {
         const response = await axios.get(cleanUrl, {
           headers: {
@@ -75,8 +84,11 @@ export const scrapeNoon = async (url) => {
     }
 
     if (!html || typeof html !== 'string' || html.length < 100) {
-      throw new Error('فشل في جلب محتوى الصفحة');
+      console.log('❌ Failed to fetch HTML content');
+      throw new Error('فشل في جلب محتوى الصفحة - تأكد من وجود SCRAPERAPI_KEY في ملف .env');
     }
+    
+    console.log(`📄 HTML content received: ${html.length} bytes`);
 
     const $ = cheerio.load(html);
     
