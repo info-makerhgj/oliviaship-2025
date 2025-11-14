@@ -2,457 +2,112 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 
 /**
- * Noon Scraper - مخصص ومحسّن لموقع نون
- * يركز على: صورة، اسم، سعر فقط - سريع وفعّال
+ * Noon Scraper - يستخدم ScraperAPI مع render
  */
 export const scrapeNoon = async (url) => {
   const startTime = Date.now();
   
   try {
-    // تنظيف URL
-    const urlObj = new URL(url);
-    const cleanUrl = urlObj.origin + urlObj.pathname + (urlObj.search || '');
+    console.log(`🔍 Scraping Noon: ${url.substring(0, 80)}`);
     
-    // محاولة استخراج SKU من الرابط
-    // مثال: /product-name/N12345678A/p/ أو /Z222AA73C7DAA25495E83Z/p/
-    const skuMatch = url.match(/\/([A-Z][A-Z0-9]+)\/p\/?/i);
-    const sku = skuMatch ? skuMatch[1] : null;
-    
-    console.log(`📦 Extracted SKU from URL: ${sku || 'Not found'}`);
-    console.log(`🔗 Original URL: ${url.substring(0, 100)}`);
-    
-    // إذا وجدنا SKU، نحاول استخدام Noon API مباشرة
-    if (sku && sku.length > 5) {
-      try {
-        console.log(`🎯 Trying Noon API with SKU: ${sku}`);
-        const apiUrl = `https://www.noon.com/_svc/catalog/api/v3/u/product-detail/${sku}`;
-        console.log(`📡 API URL: ${apiUrl}`);
-        
-        const apiResponse = await axios.get(apiUrl, {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'application/json, text/plain, */*',
-            'Accept-Language': 'ar-SA,ar;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Referer': cleanUrl,
-            'Origin': 'https://www.noon.com',
-          },
-          timeout: 15000,
-        });
-        
-        console.log(`📦 API Response status: ${apiResponse.status}`);
-        console.log(`📦 API Response data keys: ${Object.keys(apiResponse.data || {}).join(', ')}`);
-        
-        if (apiResponse.data) {
-          const data = apiResponse.data;
-          // Noon API يرجع البيانات في أكثر من شكل
-          const product = data.product_detail || data.product || data;
-          
-          if (product && (product.name || product.title)) {
-            console.log('✅ Got product data from Noon API');
-            console.log(`Product name: ${product.name || product.title}`);
-            
-            // استخراج السعر
-            let price = 0;
-            if (product.price?.value) {
-              price = parseFloat(product.price.value);
-            } else if (product.offers?.price) {
-              price = parseFloat(product.offers.price);
-            } else if (product.sale_price) {
-              price = parseFloat(product.sale_price);
-            } else if (product.price) {
-              price = parseFloat(product.price);
-            }
-            
-            // استخراج الصورة
-            let image = '';
-            if (product.image_url) {
-              image = product.image_url;
-            } else if (product.image_keys && product.image_keys.length > 0) {
-              image = `https://k.nooncdn.com/t_desktop-pdp-v1/${product.image_keys[0]}.jpg`;
-            } else if (product.images && product.images.length > 0) {
-              image = product.images[0];
-            }
-            
-            const duration = Date.now() - startTime;
-            console.log(`⚡ Noon API completed in ${duration}ms`);
-            
-            return {
-              success: true,
-              product: {
-                name: product.name || product.title || '',
-                price: price,
-                currency: 'SAR',
-                image: image,
-                store: 'noon',
-                url: url,
-              },
-              metadata: {
-                duration: duration,
-                source: 'noon-api',
-              },
-            };
-          }
-        }
-      } catch (apiError) {
-        console.log(`⚠️ Noon API failed: ${apiError.message}`);
-        if (apiError.response) {
-          console.log(`API Error status: ${apiError.response.status}`);
-          console.log(`API Error data: ${JSON.stringify(apiError.response.data).substring(0, 200)}`);
-        }
-        // نكمل للطريقة العادية
-      }
-    } else {
-      console.log('⚠️ Could not extract valid SKU from URL');
+    // التحقق من وجود ScraperAPI Key
+    if (!process.env.SCRAPERAPI_KEY || process.env.SCRAPERAPI_KEY === 'your_scraperapi_key') {
+      throw new Error('SCRAPERAPI_KEY غير موجود أو غير صحيح');
     }
     
-    let html = '';
+    console.log('🚀 Using ScraperAPI with JavaScript rendering...');
     
-    // التحقق من وجود SCRAPERAPI_KEY وأنه ليس القيمة الافتراضية
-    const hasValidScraperKey = process.env.SCRAPERAPI_KEY && 
-                                process.env.SCRAPERAPI_KEY !== 'your_scraperapi_key' &&
-                                process.env.SCRAPERAPI_KEY.length > 10;
+    // استخدام ScraperAPI مع render (ضروري لنون)
+    const response = await axios.get('http://api.scraperapi.com', {
+      params: {
+        api_key: process.env.SCRAPERAPI_KEY,
+        url: url,
+        render: 'true', // مهم جداً لنون
+        country_code: 'sa',
+      },
+      timeout: 60000, // دقيقة كاملة للـ render
+    });
     
-    console.log(`🔑 ScraperAPI Key status: ${hasValidScraperKey ? 'Valid' : 'Invalid or missing'}`);
+    const html = response.data;
+    console.log(`✅ Got HTML: ${html.length} bytes`);
     
-    // استخدام ScraperAPI - نبدأ بدون render أولاً (أسرع وأرخص)
-    if (hasValidScraperKey) {
-      try {
-        console.log('🚀 Using ScraperAPI for Noon (no render first)');
-        const response = await axios.get('http://api.scraperapi.com', {
-          params: {
-            api_key: process.env.SCRAPERAPI_KEY,
-            url: cleanUrl,
-            render: false, // نبدأ بدون render
-            country_code: 'sa',
-          },
-          timeout: 30000,
-        });
-        html = response.data;
-        console.log(`✅ ScraperAPI success (${html.length} bytes)`);
-        
-        // تحقق من وجود محتوى مفيد
-        if (html.length < 5000 || !html.includes('noon')) {
-          console.log('⚠️ HTML seems incomplete, trying with render...');
-          throw new Error('HTML incomplete');
-        }
-      } catch (error) {
-        console.log(`⚠️ ScraperAPI without render failed: ${error.message}`);
-        
-        // محاولة مع render
-        try {
-          console.log('🔄 Trying ScraperAPI WITH render...');
-          const response = await axios.get('http://api.scraperapi.com', {
-            params: {
-              api_key: process.env.SCRAPERAPI_KEY,
-              url: cleanUrl,
-              render: true,
-              country_code: 'sa',
-            },
-            timeout: 45000,
-          });
-          html = response.data;
-          console.log(`✅ ScraperAPI with render succeeded (${html.length} bytes)`);
-        } catch (renderError) {
-          console.log(`❌ ScraperAPI with render also failed: ${renderError.message}`);
-          if (renderError.response) {
-            console.log(`Status: ${renderError.response.status}`);
-            console.log(`Data: ${JSON.stringify(renderError.response.data).substring(0, 300)}`);
-          }
-        }
-      }
+    if (!html || html.length < 1000) {
+      throw new Error('HTML content too short');
     }
     
-    // إذا لم ينجح ScraperAPI أو لم يكن موجود، استخدم الطريقة المباشرة
-    if (!html || html.length < 100) {
-      console.log('⚠️ Trying direct request to Noon...');
-      try {
-        const response = await axios.get(cleanUrl, {
-          headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-            'Accept-Language': 'ar-SA,ar;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Referer': 'https://www.noon.com/',
-            'Cache-Control': 'no-cache',
-          },
-          timeout: 10000,
-          maxRedirects: 5,
-        });
-        html = response.data;
-        console.log(`✅ Direct request succeeded (${html.length} bytes)`);
-      } catch (error) {
-        console.log(`❌ Direct request failed: ${error.message}`);
-      }
-    }
-
-    if (!html || typeof html !== 'string' || html.length < 100) {
-      console.log('❌ Failed to fetch HTML content');
-      console.log(`HTML length: ${html ? html.length : 0}`);
-      console.log(`HTML type: ${typeof html}`);
-      throw new Error('فشل في جلب محتوى الصفحة من نون. جرب مرة أخرى أو تواصل مع الدعم.');
-    }
-    
-    console.log(`📄 HTML content received: ${html.length} bytes`);
-
     const $ = cheerio.load(html);
     
-    // ========== جلب الاسم (Name) - أولوية عالية ==========
+    // استخراج الاسم
     let name = '';
+    name = $('h1[data-qa="product-name"]').text().trim() ||
+           $('h1').first().text().trim() ||
+           $('meta[property="og:title"]').attr('content') ||
+           $('title').text().trim();
     
-    // محاولات متعددة بترتيب الأولوية لنون
-    const nameSelectors = [
-      'h1[data-qa="product-name"]',              // نون الرئيسي
-      'h1.productContainer__name',               // نون بديل
-      'h1[class*="productName"]',                // نون عام
-      'h1[class*="ProductName"]',                 // نون بديل
-      'h1[data-product-title]',                  // نون data attribute
-      '.productContainer h1',                    // نون container
-      'h1.sc-fzqARJ',                            // نون styled
-      'meta[property="og:title"]',               // Meta tag
-      'meta[name="twitter:title"]',              // Twitter meta
-      'title',                                   // العنوان العام
-    ];
-    
-    for (const selector of nameSelectors) {
-      if (selector.includes('meta')) {
-        name = $(selector).attr('content')?.trim();
-      } else {
-        name = $(selector).first().text().trim();
-      }
-      
-      if (name && name.length > 5) {
-        // تنظيف الاسم من أي نصوص إضافية
-        name = name.replace(/\s+/g, ' ').trim();
-        // إزالة "نون" من البداية إذا كان موجوداً
-        name = name.replace(/^نون\s*[-–]\s*/i, '').trim();
-        // إزالة "تسوق" من البداية
-        name = name.replace(/^تسوق\s+/i, '').trim();
-        // إزالة "أونلاين في السعودية" من النهاية
-        name = name.replace(/\s+أونلاين\s+في\s+السعودية.*$/i, '').trim();
-        name = name.replace(/\s+أونلاين.*$/i, '').trim();
-        if (name.length > 5) break;
-      }
+    // تنظيف الاسم
+    if (name) {
+      name = name.replace(/\s+/g, ' ').trim();
+      name = name.replace(/^تسوق\s+/i, '').trim();
+      name = name.replace(/\s+أونلاين.*$/i, '').trim();
     }
     
-    // تنظيف title من نون
-    if (!name || name.length < 5) {
-      const titleText = $('title').text().trim();
-      if (titleText) {
-        // استخراج اسم المنتج من title
-        const titleMatch = titleText.match(/تسوق\s+(.+?)\s+أونلاين/i);
-        if (titleMatch && titleMatch[1]) {
-          name = titleMatch[1].trim();
-          // تنظيف إضافي
-          name = name.replace(/أونلاين.*$/i, '').trim();
-        }
-      }
-    }
+    console.log(`📝 Name: ${name.substring(0, 50)}`);
     
-    // البحث في JSON-LD (نون يستخدم JSON-LD كثيراً)
-    if (!name || name.length < 5) {
-      try {
-        const jsonLdScripts = $('script[type="application/ld+json"]');
-        for (let i = 0; i < jsonLdScripts.length; i++) {
-          try {
-            const jsonData = JSON.parse($(jsonLdScripts[i]).text());
-            
-            // محاولات مختلفة
-            if (jsonData.name) {
-              name = jsonData.name;
-            } else if (jsonData['@graph']) {
-              const product = jsonData['@graph'].find(item => item['@type'] === 'Product');
-              if (product && product.name) {
-                name = product.name;
-              }
-            } else if (Array.isArray(jsonData)) {
-              const product = jsonData.find(item => item['@type'] === 'Product');
-              if (product && product.name) {
-                name = product.name;
-              }
-            }
-            
-            if (name && name.length > 5) break;
-          } catch (e) {
-            // continue
-          }
-        }
-      } catch (e) {
-        // ignore
-      }
-    }
-    
-    // ========== جلب السعر (Price) - أولوية عالية ==========
+    // استخراج السعر
     let price = 0;
-    let priceText = '';
     
-    // محاولات متعددة بترتيب الأولوية لنون
-    const priceSelectors = [
-      'strong[data-qa="product-price"]',         // نون الأساسي
-      '[data-qa="product-price"]',               // نون الرئيسي
-      'div.priceNow',                            // نون سعر الآن
-      'span.priceNow',                           // نون سعر بديل
-      '.sellingPrice',                           // نون سعر البيع
-      '[data-price]',                            // نون data attribute
-      '.productContainer__price strong',         // نون container
-      '[class*="PriceNow"]',                     // نون class
-      '[class*="price-now"]',                    // نون class
-      'strong[class*="price"]',                  // نون strong price
-    ];
+    // محاولة 1: من data attribute
+    const priceElement = $('[data-qa="product-price"]').first();
+    let priceText = priceElement.text().trim();
     
-    for (const selector of priceSelectors) {
-      const element = $(selector).first();
-      
-      // محاولة data attribute أولاً
-      priceText = element.attr('data-price') ||
-                  element.attr('data-qa-price') ||
-                  element.text().trim();
-      
-      if (priceText) {
-        // تنظيف السعر - إزالة كل شيء ما عدا الأرقام والنقطة
-        let cleanPrice = priceText.toString().replace(/[^\d.,]/g, '').replace(/,/g, '').trim();
-        
-        // تحويل الأرقام العربية إلى إنجليزية
-        const arabicToEnglish = {
-          '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
-          '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
-        };
-        cleanPrice = cleanPrice.replace(/[٠-٩]/g, (char) => arabicToEnglish[char] || char);
-        
-        const priceMatch = cleanPrice.match(/[\d]+\.?\d*/);
-        if (priceMatch) {
-          const foundPrice = parseFloat(priceMatch[0]);
-          if (foundPrice > 0 && foundPrice < 100000) { // سعر منطقي
-            price = foundPrice;
-            console.log(`✅ Found price: ${price} SAR from selector: ${selector}`);
-            break;
-          }
-        }
-      }
+    // محاولة 2: من class
+    if (!priceText) {
+      priceText = $('.priceNow').first().text().trim();
     }
     
-    // محاولة إضافية: البحث في جميع العناصر التي تحتوي على "ريال"
-    if (price === 0) {
-      console.log('⚠️ Trying to find price in text containing "ريال"');
+    // محاولة 3: من أي عنصر يحتوي على "ريال"
+    if (!priceText) {
       $('*').each((_i, el) => {
         const text = $(el).text().trim();
-        // تحقق من أن النص قصير (ليس فقرة كاملة) ويحتوي على ريال
-        if (text.length < 50 && (text.includes('ريال') || text.includes('SAR') || text.includes('ر.س'))) {
-          const priceMatch = text.match(/([\d,]+\.?\d*)\s*(?:ريال|SAR|ر\.س)/);
-          if (priceMatch) {
-            const foundPrice = parseFloat(priceMatch[1].replace(/,/g, ''));
-            if (foundPrice > 0 && foundPrice < 100000) { // سعر منطقي
-              price = foundPrice;
-              console.log(`✅ Found price from text: ${price} SAR`);
-              return false; // break
-            }
-          }
+        if (text.length < 50 && text.includes('ريال')) {
+          priceText = text;
+          return false; // break
         }
       });
     }
     
-    // البحث في JSON-LD
-    if (price === 0) {
-      try {
-        const jsonLdScripts = $('script[type="application/ld+json"]');
-        for (let i = 0; i < jsonLdScripts.length; i++) {
-          try {
-            const jsonData = JSON.parse($(jsonLdScripts[i]).text());
-            
-            // محاولات مختلفة
-            if (jsonData.offers) {
-              if (Array.isArray(jsonData.offers) && jsonData.offers[0]?.price) {
-                price = parseFloat(jsonData.offers[0].price);
-              } else if (jsonData.offers.price) {
-                price = parseFloat(jsonData.offers.price);
-              } else if (jsonData.offers.lowPrice) {
-                price = parseFloat(jsonData.offers.lowPrice);
-              }
-            }
-            
-            if (jsonData.price) {
-              price = parseFloat(jsonData.price);
-            }
-            
-            // البحث في @graph
-            if (price === 0 && jsonData['@graph']) {
-              const product = jsonData['@graph'].find(item => item['@type'] === 'Product');
-              if (product && product.offers) {
-                if (Array.isArray(product.offers) && product.offers[0]?.price) {
-                  price = parseFloat(product.offers[0].price);
-                } else if (product.offers.price) {
-                  price = parseFloat(product.offers.price);
-                }
-              }
-            }
-            
-            if (price > 0) break;
-          } catch (e) {
-            // continue
-          }
-        }
-      } catch (e) {
-        // ignore
-      }
+    // تنظيف السعر
+    if (priceText) {
+      const cleanPrice = priceText.replace(/[^\d.]/g, '');
+      price = parseFloat(cleanPrice);
     }
     
-    // محاولة من Meta tags
-    if (price === 0) {
-      const metaPrice = $('meta[property="product:price:amount"]').attr('content');
-      if (metaPrice) {
-        price = parseFloat(metaPrice);
-      }
-    }
+    console.log(`💰 Price: ${price} SAR`);
     
-    // تنظيف السعر - إزالة الهامش .01
-    if (price > 0) {
-      // إذا كان السعر ينتهي بـ .01 أو .1 أو قريب منها، نقربه لرقم صحيح
-      const decimal = price % 1;
-      if (decimal > 0 && decimal < 0.02) {
-        // إذا كان الرقم العشري أقل من 0.02 (مثل .01)، نجعل السعر صحيح
-        price = Math.floor(price);
-      } else {
-        // خلاف ذلك، نقرب لرقمين عشريين فقط
-        price = Math.round(price * 100) / 100;
-        // إذا كان الرقم العشري صغير جداً (مثل .0001)، نجعل السعر صحيح
-        if (price % 1 < 0.01) {
-          price = Math.round(price);
-        }
-      }
-    }
-    
-    // ========== جلب الصورة (Image) - استخدام النظام القديم البسيط والسريع ==========
+    // استخراج الصورة
     let image = '';
+    image = $('img[data-qa="product-image"]').attr('src') ||
+            $('img[data-qa="product-image"]').attr('data-src') ||
+            $('meta[property="og:image"]').attr('content') ||
+            $('img').first().attr('src');
     
-    // النظام القديم كان بسيط وسريع - نفس الطريقة
-    image = $('[data-product-image]').attr('data-product-image') ||
-            $('meta[property="og:image"]').attr('content');
-    
-    // Clean image URL (نفس الكود القديم)
+    // تنظيف URL الصورة
     if (image && !image.startsWith('http')) {
-      try {
-        if (image.startsWith('//')) {
-          image = 'https:' + image;
-        } else if (image.startsWith('/')) {
-          image = urlObj.origin + image;
-        }
-      } catch (e) {
-        // Keep original
+      if (image.startsWith('//')) {
+        image = 'https:' + image;
       }
     }
+    
+    console.log(`🖼️ Image: ${image ? 'Found' : 'Not found'}`);
     
     const duration = Date.now() - startTime;
-    console.log(`⚡ Noon scraper completed in ${duration}ms`);
+    console.log(`⚡ Completed in ${duration}ms`);
     
-    // التحقق من البيانات الأساسية
-    if (!name || name.length < 3) {
-      return {
-        success: false,
-        error: 'لم يتم العثور على اسم المنتج',
-        details: 'الرجاء التأكد من صحة الرابط',
-      };
+    // التحقق من البيانات
+    if (!name || name.length < 5) {
+      throw new Error('لم يتم العثور على اسم المنتج');
     }
     
-    // إرجاع النتيجة
     return {
       success: true,
       product: {
@@ -465,37 +120,17 @@ export const scrapeNoon = async (url) => {
       },
       metadata: {
         duration: duration,
-        source: 'noon-scraper',
+        source: 'noon-scraperapi',
       },
     };
     
   } catch (error) {
-    console.error('❌ Noon scraper error:', {
-      message: error.message,
-      code: error.code,
-      url: url.substring(0, 60),
-    });
-    
-    let errorMessage = 'فشل في جلب بيانات المنتج من نون';
-    
-    if (error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
-      errorMessage = 'فشل الاتصال بنون. يرجى المحاولة مرة أخرى.';
-    } else if (error.response) {
-      const status = error.response.status;
-      if (status === 403 || status === 401) {
-        errorMessage = 'تم رفض الوصول للمنتج. يرجى التحقق من صحة الرابط.';
-      } else if (status === 404) {
-        errorMessage = 'المنتج غير موجود. يرجى التحقق من صحة الرابط.';
-      } else if (status >= 500) {
-        errorMessage = 'خطأ في خادم نون. يرجى المحاولة لاحقاً.';
-      }
-    }
+    console.error('❌ Noon scraper error:', error.message);
     
     return {
       success: false,
-      error: errorMessage,
+      error: 'فشل في جلب بيانات المنتج من نون',
       details: error.message,
     };
   }
 };
-
