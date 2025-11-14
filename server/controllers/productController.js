@@ -4,6 +4,23 @@ import { catchAsync } from '../utils/catchAsync.js';
 import Settings from '../models/Settings.js';
 import { normalizeUrl } from '../utils/extractUrl.js';
 
+// Get all products (returns empty array since products are fetched on-demand)
+export const getAllProducts = catchAsync(async (req, res) => {
+  res.json({
+    success: true,
+    data: [],
+    message: 'المنتجات تُجلب عند الطلب من المتاجر الخارجية'
+  });
+});
+
+// Get product by ID (not implemented yet)
+export const getProductById = catchAsync(async (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'المنتج غير موجود'
+  });
+});
+
 export const fetchFromUrl = catchAsync(async (req, res, next) => {
   let { url } = req.body;
 
