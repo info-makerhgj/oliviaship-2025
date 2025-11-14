@@ -11,8 +11,14 @@ export const scrapeNoon = async (url) => {
     console.log(`🔍 Scraping Noon: ${url.substring(0, 80)}`);
     
     // التحقق من وجود ScraperAPI Key
-    if (!process.env.SCRAPERAPI_KEY || process.env.SCRAPERAPI_KEY === 'your_scraperapi_key') {
-      throw new Error('SCRAPERAPI_KEY غير موجود أو غير صحيح');
+    const hasKey = process.env.SCRAPERAPI_KEY && 
+                   process.env.SCRAPERAPI_KEY !== 'your_scraperapi_key' &&
+                   process.env.SCRAPERAPI_KEY.length > 10;
+    
+    console.log(`🔑 ScraperAPI Key: ${hasKey ? 'Valid (' + process.env.SCRAPERAPI_KEY.substring(0, 8) + '...)' : 'Invalid'}`);
+    
+    if (!hasKey) {
+      throw new Error('SCRAPERAPI_KEY غير موجود أو غير صحيح في ملف .env');
     }
     
     console.log('🚀 Using ScraperAPI with JavaScript rendering...');
