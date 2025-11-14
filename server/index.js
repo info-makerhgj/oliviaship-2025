@@ -50,6 +50,8 @@ app.use(helmet());
 const allowedOrigins = [
   process.env.FRONTEND_URL,
   process.env.CLIENT_URL,
+  'https://www.oliviaship.com',
+  'https://oliviaship.com',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'https://oliviaship-2025.vercel.app',
@@ -96,24 +98,6 @@ app.use(cors({
   exposedHeaders: ['Content-Range', 'X-Content-Range'],
   maxAge: 600, // 10 minutes
 }));
-
-// Additional CORS headers middleware (backup)
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  if (origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  }
-  
-  // Handle preflight
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
-  next();
-});
 
 // Rate limiting - More lenient in development mode
 const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
