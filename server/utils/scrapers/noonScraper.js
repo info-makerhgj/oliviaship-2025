@@ -22,44 +22,50 @@ export const scrapeNoon = async (url) => {
     
     console.log(`🔑 ScraperAPI Key status: ${hasValidScraperKey ? 'Valid' : 'Invalid or missing'}`);
     
-    // استخدام ScraperAPI مباشرة لتجنب الحظر - نون يحتاج render
+    // استخدام ScraperAPI - نبدأ بدون render أولاً (أسرع وأرخص)
     if (hasValidScraperKey) {
       try {
-        console.log('🚀 Using ScraperAPI for Noon with render');
+        console.log('🚀 Using ScraperAPI for Noon (no render first)');
         const response = await axios.get('http://api.scraperapi.com', {
           params: {
             api_key: process.env.SCRAPERAPI_KEY,
             url: cleanUrl,
-            render: true, // نون يحتاج render لأنه JavaScript heavy
-            country_code: 'sa', // السعودية
-            wait_for_selector: '[data-qa="product-price"]', // انتظر السعر
+            render: false, // نبدأ بدون render
+            country_code: 'sa',
           },
-          timeout: 45000, // 45 ثانية للـ render
+          timeout: 30000,
         });
         html = response.data;
-        console.log(`✅ ScraperAPI success for Noon (${html.length} bytes)`);
-      } catch (error) {
-        console.log(`⚠️ ScraperAPI with render failed: ${error.message}`);
-        console.log(`Error status: ${error.response?.status}`);
-        console.log(`Error data: ${JSON.stringify(error.response?.data).substring(0, 200)}`);
+        console.log(`✅ ScraperAPI success (${html.length} bytes)`);
         
-        // محاولة بدون render
+        // تحقق من وجود محتوى مفيد
+        if (html.length < 5000 || !html.includes('noon')) {
+          console.log('⚠️ HTML seems incomplete, trying with render...');
+          throw new Error('HTML incomplete');
+        }
+      } catch (error) {
+        console.log(`⚠️ ScraperAPI without render failed: ${error.message}`);
+        
+        // محاولة مع render
         try {
-          console.log('🔄 Trying ScraperAPI without render...');
+          console.log('🔄 Trying ScraperAPI WITH render...');
           const response = await axios.get('http://api.scraperapi.com', {
             params: {
               api_key: process.env.SCRAPERAPI_KEY,
               url: cleanUrl,
-              render: false,
+              render: true,
               country_code: 'sa',
             },
-            timeout: 30000,
+            timeout: 45000,
           });
           html = response.data;
-          console.log(`✅ ScraperAPI without render succeeded (${html.length} bytes)`);
-        } catch (fallbackError) {
-          console.log(`❌ ScraperAPI fallback also failed: ${fallbackError.message}`);
-          console.log(`Fallback error status: ${fallbackError.response?.status}`);
+          console.log(`✅ ScraperAPI with render succeeded (${html.length} bytes)`);
+        } catch (renderError) {
+          console.log(`❌ ScraperAPI with render also failed: ${renderError.message}`);
+          if (renderError.response) {
+            console.log(`Status: ${renderError.response.status}`);
+            console.log(`Data: ${JSON.stringify(renderError.response.data).substring(0, 300)}`);
+          }
         }
       }
     }
