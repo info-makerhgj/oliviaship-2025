@@ -14,52 +14,95 @@ export const scrapeNoon = async (url) => {
     const cleanUrl = urlObj.origin + urlObj.pathname + (urlObj.search || '');
     
     // محاولة استخراج SKU من الرابط
-    // مثال: /product-name/N12345678A/p/
-    const skuMatch = url.match(/\/([A-Z0-9]+)\/p\/?/i);
+    // مثال: /product-name/N12345678A/p/ أو /Z222AA73C7DAA25495E83Z/p/
+    const skuMatch = url.match(/\/([A-Z][A-Z0-9]+)\/p\/?/i);
     const sku = skuMatch ? skuMatch[1] : null;
     
-    console.log(`📦 Extracted SKU: ${sku || 'Not found'}`);
+    console.log(`📦 Extracted SKU from URL: ${sku || 'Not found'}`);
+    console.log(`🔗 Original URL: ${url.substring(0, 100)}`);
     
     // إذا وجدنا SKU، نحاول استخدام Noon API مباشرة
-    if (sku) {
+    if (sku && sku.length > 5) {
       try {
-        console.log('🎯 Trying Noon API directly with SKU...');
+        console.log(`🎯 Trying Noon API with SKU: ${sku}`);
         const apiUrl = `https://www.noon.com/_svc/catalog/api/v3/u/product-detail/${sku}`;
+        console.log(`📡 API URL: ${apiUrl}`);
+        
         const apiResponse = await axios.get(apiUrl, {
           headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'application/json',
-            'Accept-Language': 'ar-SA,ar;q=0.9',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'ar-SA,ar;q=0.9,en-US;q=0.8,en;q=0.7',
             'Referer': cleanUrl,
+            'Origin': 'https://www.noon.com',
           },
-          timeout: 10000,
+          timeout: 15000,
         });
         
-        if (apiResponse.data && apiResponse.data.product_detail) {
-          const product = apiResponse.data.product_detail;
-          console.log('✅ Got product data from Noon API');
+        console.log(`📦 API Response status: ${apiResponse.status}`);
+        console.log(`📦 API Response data keys: ${Object.keys(apiResponse.data || {}).join(', ')}`);
+        
+        if (apiResponse.data) {
+          const data = apiResponse.data;
+          // Noon API يرجع البيانات في أكثر من شكل
+          const product = data.product_detail || data.product || data;
           
-          const duration = Date.now() - startTime;
-          return {
-            success: true,
-            product: {
-              name: product.name || product.title || '',
-              price: parseFloat(product.price?.value || product.offers?.price || 0),
-              currency: 'SAR',
-              image: product.image_url || product.image_keys?.[0] || '',
-              store: 'noon',
-              url: url,
-            },
-            metadata: {
-              duration: duration,
-              source: 'noon-api',
-            },
-          };
+          if (product && (product.name || product.title)) {
+            console.log('✅ Got product data from Noon API');
+            console.log(`Product name: ${product.name || product.title}`);
+            
+            // استخراج السعر
+            let price = 0;
+            if (product.price?.value) {
+              price = parseFloat(product.price.value);
+            } else if (product.offers?.price) {
+              price = parseFloat(product.offers.price);
+            } else if (product.sale_price) {
+              price = parseFloat(product.sale_price);
+            } else if (product.price) {
+              price = parseFloat(product.price);
+            }
+            
+            // استخراج الصورة
+            let image = '';
+            if (product.image_url) {
+              image = product.image_url;
+            } else if (product.image_keys && product.image_keys.length > 0) {
+              image = `https://k.nooncdn.com/t_desktop-pdp-v1/${product.image_keys[0]}.jpg`;
+            } else if (product.images && product.images.length > 0) {
+              image = product.images[0];
+            }
+            
+            const duration = Date.now() - startTime;
+            console.log(`⚡ Noon API completed in ${duration}ms`);
+            
+            return {
+              success: true,
+              product: {
+                name: product.name || product.title || '',
+                price: price,
+                currency: 'SAR',
+                image: image,
+                store: 'noon',
+                url: url,
+              },
+              metadata: {
+                duration: duration,
+                source: 'noon-api',
+              },
+            };
+          }
         }
       } catch (apiError) {
         console.log(`⚠️ Noon API failed: ${apiError.message}`);
+        if (apiError.response) {
+          console.log(`API Error status: ${apiError.response.status}`);
+          console.log(`API Error data: ${JSON.stringify(apiError.response.data).substring(0, 200)}`);
+        }
         // نكمل للطريقة العادية
       }
+    } else {
+      console.log('⚠️ Could not extract valid SKU from URL');
     }
     
     let html = '';
