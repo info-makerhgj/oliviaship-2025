@@ -135,30 +135,61 @@ export const scrapeAmazon = async (url) => {
     
     // محاولات متعددة بترتيب الأولوية
     const priceSelectors = [
+      '.a-price .a-offscreen',             // أمازون الأساسي - الأهم
       '.a-price-whole',                    // أمازون السعودية/الإمارات
-      '.a-price .a-offscreen',             // أمازون بديل
+      'span.a-price-whole',                // أمازون بديل
       '#priceblock_ourprice',              // أمازون قديم
       '#priceblock_dealprice',             // أمازون عروض
       '#priceblock_saleprice',             // أمازون خصم
-      '.a-price.a-text-price',             // أمازون بديل
-      'span[data-a-color="price"]',        // أمازون موبايل
-      '.a-price-range',                    // أمازون نطاق أسعار
+      '.a-price.a-text-price .a-offscreen', // أمازون نص
+      'span.a-price.a-text-price',         // أمازون بديل
+      '.a-price-range .a-offscreen',       // أمازون نطاق أسعار
     ];
     
     for (const selector of priceSelectors) {
-      priceText = $(selector).first().text().trim() || 
-                   $(selector).first().attr('data-a-color') ||
-                   '';
+      const element = $(selector).first();
+      priceText = element.text().trim();
       
       if (priceText) {
-        // استخراج الأرقام فقط
-        const cleanPrice = priceText.replace(/[^\d.,]/g, '').replace(/,/g, '').trim();
+        // تنظيف السعر - إزالة كل شيء ما عدا الأرقام والنقطة
+        let cleanPrice = priceText.replace(/[^\d.,]/g, '').replace(/,/g, '').trim();
+        
+        // تحويل الأرقام العربية إلى إنجليزية
+        const arabicToEnglish = {
+          '٠': '0', '١': '1', '٢': '2', '٣': '3', '٤': '4',
+          '٥': '5', '٦': '6', '٧': '7', '٨': '8', '٩': '9'
+        };
+        cleanPrice = cleanPrice.replace(/[٠-٩]/g, (char) => arabicToEnglish[char] || char);
+        
         const priceMatch = cleanPrice.match(/[\d]+\.?\d*/);
         if (priceMatch) {
-          price = parseFloat(priceMatch[0]);
-          if (price > 0) break;
+          const foundPrice = parseFloat(priceMatch[0]);
+          if (foundPrice > 0 && foundPrice < 100000) { // سعر منطقي
+            price = foundPrice;
+            console.log(`✅ Found price: ${price} SAR from selector: ${selector}`);
+            break;
+          }
         }
       }
+    }
+    
+    // محاولة إضافية: البحث في كل عناصر السعر
+    if (price === 0) {
+      $('.a-price').each((_i, el) => {
+        const offscreen = $(el).find('.a-offscreen').first().text().trim();
+        if (offscreen) {
+          let cleanPrice = offscreen.replace(/[^\d.,]/g, '').replace(/,/g, '').trim();
+          const priceMatch = cleanPrice.match(/[\d]+\.?\d*/);
+          if (priceMatch) {
+            const foundPrice = parseFloat(priceMatch[0]);
+            if (foundPrice > 0 && foundPrice < 100000) {
+              price = foundPrice;
+              console.log(`✅ Found price from .a-price iteration: ${price} SAR`);
+              return false; // break
+            }
+          }
+        }
+      });
     }
     
     // البحث في JSON-LD

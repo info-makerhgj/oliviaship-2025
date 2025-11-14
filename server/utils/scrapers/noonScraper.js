@@ -172,46 +172,28 @@ export const scrapeNoon = async (url) => {
     
     // محاولات متعددة بترتيب الأولوية لنون
     const priceSelectors = [
+      'strong[data-qa="product-price"]',         // نون الأساسي
       '[data-qa="product-price"]',               // نون الرئيسي
-      '[data-qa="price"]',                      // نون data qa
-      '.priceNow',                               // نون سعر
-      '.sellingPrice',                            // نون سعر البيع
-      '[data-price]',                             // نون data attribute
-      '.productContainer__price',                 // نون container
-      '.sc-fzqARJ[class*="price"]',              // نون styled
-      '[class*="PriceNow"]',                      // نون class
-      '[class*="price-now"]',                     // نون class
-      '[class*="Price"]',                         // نون class عام
-      '.price',                                   // نون عام
-      // البحث في النصوص
-      '*:contains("ريال")',                      // أي عنصر يحتوي على ريال
+      'div.priceNow',                            // نون سعر الآن
+      'span.priceNow',                           // نون سعر بديل
+      '.sellingPrice',                           // نون سعر البيع
+      '[data-price]',                            // نون data attribute
+      '.productContainer__price strong',         // نون container
+      '[class*="PriceNow"]',                     // نون class
+      '[class*="price-now"]',                    // نون class
+      'strong[class*="price"]',                  // نون strong price
     ];
     
-    // البحث في جميع العناصر التي تحتوي على "ريال"
-    if (price === 0) {
-      $('*').each((_i, el) => {
-        const text = $(el).text().trim();
-        if (text.includes('ريال') || text.includes('SAR') || text.includes('ر.س')) {
-          const priceMatch = text.match(/([\d,]+\.?\d*)\s*(?:ريال|SAR|ر\.س)/);
-          if (priceMatch) {
-            const foundPrice = parseFloat(priceMatch[1].replace(/,/g, ''));
-            if (foundPrice > 0 && foundPrice < 100000) { // سعر منطقي
-              price = foundPrice;
-              return false; // break
-            }
-          }
-        }
-      });
-    }
-    
     for (const selector of priceSelectors) {
+      const element = $(selector).first();
+      
       // محاولة data attribute أولاً
-      priceText = $(selector).first().attr('data-price') ||
-                   $(selector).first().attr('data-qa-price') ||
-                   $(selector).first().text().trim();
+      priceText = element.attr('data-price') ||
+                  element.attr('data-qa-price') ||
+                  element.text().trim();
       
       if (priceText) {
-        // تنظيف السعر
+        // تنظيف السعر - إزالة كل شيء ما عدا الأرقام والنقطة
         let cleanPrice = priceText.toString().replace(/[^\d.,]/g, '').replace(/,/g, '').trim();
         
         // تحويل الأرقام العربية إلى إنجليزية
@@ -223,10 +205,34 @@ export const scrapeNoon = async (url) => {
         
         const priceMatch = cleanPrice.match(/[\d]+\.?\d*/);
         if (priceMatch) {
-          price = parseFloat(priceMatch[0]);
-          if (price > 0) break;
+          const foundPrice = parseFloat(priceMatch[0]);
+          if (foundPrice > 0 && foundPrice < 100000) { // سعر منطقي
+            price = foundPrice;
+            console.log(`✅ Found price: ${price} SAR from selector: ${selector}`);
+            break;
+          }
         }
       }
+    }
+    
+    // محاولة إضافية: البحث في جميع العناصر التي تحتوي على "ريال"
+    if (price === 0) {
+      console.log('⚠️ Trying to find price in text containing "ريال"');
+      $('*').each((_i, el) => {
+        const text = $(el).text().trim();
+        // تحقق من أن النص قصير (ليس فقرة كاملة) ويحتوي على ريال
+        if (text.length < 50 && (text.includes('ريال') || text.includes('SAR') || text.includes('ر.س'))) {
+          const priceMatch = text.match(/([\d,]+\.?\d*)\s*(?:ريال|SAR|ر\.س)/);
+          if (priceMatch) {
+            const foundPrice = parseFloat(priceMatch[1].replace(/,/g, ''));
+            if (foundPrice > 0 && foundPrice < 100000) { // سعر منطقي
+              price = foundPrice;
+              console.log(`✅ Found price from text: ${price} SAR`);
+              return false; // break
+            }
+          }
+        }
+      });
     }
     
     // البحث في JSON-LD
