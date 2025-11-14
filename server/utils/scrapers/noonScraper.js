@@ -15,42 +15,40 @@ export const scrapeNoon = async (url) => {
     
     let html = '';
     
-    // استخدام ScraperAPI مباشرة لتجنب الحظر
+    // استخدام ScraperAPI مباشرة لتجنب الحظر - نون يحتاج render
     if (process.env.SCRAPERAPI_KEY) {
       try {
-        console.log('🚀 Using ScraperAPI for Noon (direct)');
+        console.log('🚀 Using ScraperAPI for Noon with render');
         const response = await axios.get('http://api.scraperapi.com', {
           params: {
             api_key: process.env.SCRAPERAPI_KEY,
             url: cleanUrl,
-            render: false, // بدون render أسرع
+            render: true, // نون يحتاج render لأنه JavaScript heavy
             country_code: 'sa', // السعودية
+            wait_for_selector: '[data-qa="product-price"]', // انتظر السعر
           },
-          timeout: 30000, // 30 ثانية
+          timeout: 45000, // 45 ثانية للـ render
         });
         html = response.data;
-        console.log(`✅ ScraperAPI success for Noon`);
+        console.log(`✅ ScraperAPI success for Noon (${html.length} bytes)`);
       } catch (error) {
-        console.log(`⚠️ ScraperAPI failed: ${error.message}`);
-        // Fallback: محاولة مباشرة فقط إذا فشل ScraperAPI
+        console.log(`⚠️ ScraperAPI with render failed: ${error.message}`);
+        // محاولة بدون render
         try {
-          console.log('🔄 Trying direct request as fallback...');
-          const response = await axios.get(cleanUrl, {
-            headers: {
-              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-              'Accept-Language': 'ar-SA,ar;q=0.9,en-US;q=0.8,en;q=0.7',
-              'Accept-Encoding': 'gzip, deflate, br',
-              'Referer': 'https://www.noon.com/',
-              'Cache-Control': 'no-cache',
+          console.log('🔄 Trying ScraperAPI without render...');
+          const response = await axios.get('http://api.scraperapi.com', {
+            params: {
+              api_key: process.env.SCRAPERAPI_KEY,
+              url: cleanUrl,
+              render: false,
+              country_code: 'sa',
             },
-            timeout: 10000,
-            maxRedirects: 5,
+            timeout: 30000,
           });
           html = response.data;
-          console.log('✅ Direct request fallback succeeded');
+          console.log(`✅ ScraperAPI without render succeeded`);
         } catch (fallbackError) {
-          console.log(`❌ Direct request fallback also failed: ${fallbackError.message}`);
+          console.log(`❌ ScraperAPI fallback also failed: ${fallbackError.message}`);
         }
       }
     } else {
@@ -70,6 +68,7 @@ export const scrapeNoon = async (url) => {
           maxRedirects: 5,
         });
         html = response.data;
+        console.log(`✅ Direct request succeeded (${html.length} bytes)`);
       } catch (error) {
         console.log(`❌ Direct request failed: ${error.message}`);
       }
