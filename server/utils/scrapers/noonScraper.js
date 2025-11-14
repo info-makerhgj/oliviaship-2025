@@ -13,6 +13,55 @@ export const scrapeNoon = async (url) => {
     const urlObj = new URL(url);
     const cleanUrl = urlObj.origin + urlObj.pathname + (urlObj.search || '');
     
+    // محاولة استخراج SKU من الرابط
+    // مثال: /product-name/N12345678A/p/
+    const skuMatch = url.match(/\/([A-Z0-9]+)\/p\/?/i);
+    const sku = skuMatch ? skuMatch[1] : null;
+    
+    console.log(`📦 Extracted SKU: ${sku || 'Not found'}`);
+    
+    // إذا وجدنا SKU، نحاول استخدام Noon API مباشرة
+    if (sku) {
+      try {
+        console.log('🎯 Trying Noon API directly with SKU...');
+        const apiUrl = `https://www.noon.com/_svc/catalog/api/v3/u/product-detail/${sku}`;
+        const apiResponse = await axios.get(apiUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'application/json',
+            'Accept-Language': 'ar-SA,ar;q=0.9',
+            'Referer': cleanUrl,
+          },
+          timeout: 10000,
+        });
+        
+        if (apiResponse.data && apiResponse.data.product_detail) {
+          const product = apiResponse.data.product_detail;
+          console.log('✅ Got product data from Noon API');
+          
+          const duration = Date.now() - startTime;
+          return {
+            success: true,
+            product: {
+              name: product.name || product.title || '',
+              price: parseFloat(product.price?.value || product.offers?.price || 0),
+              currency: 'SAR',
+              image: product.image_url || product.image_keys?.[0] || '',
+              store: 'noon',
+              url: url,
+            },
+            metadata: {
+              duration: duration,
+              source: 'noon-api',
+            },
+          };
+        }
+      } catch (apiError) {
+        console.log(`⚠️ Noon API failed: ${apiError.message}`);
+        // نكمل للطريقة العادية
+      }
+    }
+    
     let html = '';
     
     // التحقق من وجود SCRAPERAPI_KEY وأنه ليس القيمة الافتراضية
