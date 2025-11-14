@@ -40,6 +40,9 @@ export const scrapeNoon = async (url) => {
         console.log(`✅ ScraperAPI success for Noon (${html.length} bytes)`);
       } catch (error) {
         console.log(`⚠️ ScraperAPI with render failed: ${error.message}`);
+        console.log(`Error status: ${error.response?.status}`);
+        console.log(`Error data: ${JSON.stringify(error.response?.data).substring(0, 200)}`);
+        
         // محاولة بدون render
         try {
           console.log('🔄 Trying ScraperAPI without render...');
@@ -53,9 +56,10 @@ export const scrapeNoon = async (url) => {
             timeout: 30000,
           });
           html = response.data;
-          console.log(`✅ ScraperAPI without render succeeded`);
+          console.log(`✅ ScraperAPI without render succeeded (${html.length} bytes)`);
         } catch (fallbackError) {
           console.log(`❌ ScraperAPI fallback also failed: ${fallbackError.message}`);
+          console.log(`Fallback error status: ${fallbackError.response?.status}`);
         }
       }
     }
@@ -85,7 +89,9 @@ export const scrapeNoon = async (url) => {
 
     if (!html || typeof html !== 'string' || html.length < 100) {
       console.log('❌ Failed to fetch HTML content');
-      throw new Error('فشل في جلب محتوى الصفحة - تأكد من وجود SCRAPERAPI_KEY في ملف .env');
+      console.log(`HTML length: ${html ? html.length : 0}`);
+      console.log(`HTML type: ${typeof html}`);
+      throw new Error('فشل في جلب محتوى الصفحة من نون. جرب مرة أخرى أو تواصل مع الدعم.');
     }
     
     console.log(`📄 HTML content received: ${html.length} bytes`);
