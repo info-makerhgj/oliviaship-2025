@@ -15,43 +15,63 @@ export const scrapeNoon = async (url) => {
     
     let html = '';
     
-    // محاولة 1: جلب مباشر مع headers محسّنة لنون
-    try {
-      const response = await axios.get(cleanUrl, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-          'Accept-Language': 'ar-SA,ar;q=0.9,en-US;q=0.8,en;q=0.7',
-          'Accept-Encoding': 'gzip, deflate, br',
-          'Referer': 'https://www.noon.com/',
-          'Cache-Control': 'no-cache',
-          'sec-ch-ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
-          'sec-ch-ua-mobile': '?0',
-          'sec-ch-ua-platform': '"Windows"',
-        },
-        timeout: 10000, // 10 ثواني فقط
-        maxRedirects: 5,
-      });
-      html = response.data;
-    } catch (error) {
-      console.log(`⚠️ Direct request failed: ${error.message}`);
-    }
-
-    // محاولة 2: ScraperAPI فقط إذا فشل الجلب المباشر (للسرعة)
-    if ((!html || html.length < 100) && process.env.SCRAPERAPI_KEY) {
+    // استخدام ScraperAPI مباشرة لتجنب الحظر
+    if (process.env.SCRAPERAPI_KEY) {
       try {
+        console.log('🚀 Using ScraperAPI for Noon (direct)');
         const response = await axios.get('http://api.scraperapi.com', {
           params: {
             api_key: process.env.SCRAPERAPI_KEY,
             url: cleanUrl,
             render: false, // بدون render أسرع
+            country_code: 'sa', // السعودية
           },
-          timeout: 15000,
+          timeout: 30000, // 30 ثانية
         });
         html = response.data;
-        console.log(`✅ ScraperAPI used for Noon`);
+        console.log(`✅ ScraperAPI success for Noon`);
       } catch (error) {
         console.log(`⚠️ ScraperAPI failed: ${error.message}`);
+        // Fallback: محاولة مباشرة فقط إذا فشل ScraperAPI
+        try {
+          console.log('🔄 Trying direct request as fallback...');
+          const response = await axios.get(cleanUrl, {
+            headers: {
+              'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+              'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+              'Accept-Language': 'ar-SA,ar;q=0.9,en-US;q=0.8,en;q=0.7',
+              'Accept-Encoding': 'gzip, deflate, br',
+              'Referer': 'https://www.noon.com/',
+              'Cache-Control': 'no-cache',
+            },
+            timeout: 10000,
+            maxRedirects: 5,
+          });
+          html = response.data;
+          console.log('✅ Direct request fallback succeeded');
+        } catch (fallbackError) {
+          console.log(`❌ Direct request fallback also failed: ${fallbackError.message}`);
+        }
+      }
+    } else {
+      // إذا لم يكن ScraperAPI موجود، استخدم الطريقة المباشرة
+      console.log('⚠️ SCRAPERAPI_KEY not found, using direct request');
+      try {
+        const response = await axios.get(cleanUrl, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'ar-SA,ar;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Referer': 'https://www.noon.com/',
+            'Cache-Control': 'no-cache',
+          },
+          timeout: 10000,
+          maxRedirects: 5,
+        });
+        html = response.data;
+      } catch (error) {
+        console.log(`❌ Direct request failed: ${error.message}`);
       }
     }
 
@@ -169,7 +189,7 @@ export const scrapeNoon = async (url) => {
     
     // البحث في جميع العناصر التي تحتوي على "ريال"
     if (price === 0) {
-      $('*').each((i, el) => {
+      $('*').each((_i, el) => {
         const text = $(el).text().trim();
         if (text.includes('ريال') || text.includes('SAR') || text.includes('ر.س')) {
           const priceMatch = text.match(/([\d,]+\.?\d*)\s*(?:ريال|SAR|ر\.س)/);

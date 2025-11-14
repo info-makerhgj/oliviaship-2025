@@ -10,7 +10,8 @@
     "client": "vite",
     "build": "vite build",
     "start": "node server/index.js",
-    "generate:sitemap": "node generate-sitemap.js"
+    "generate:sitemap": "node generate-sitemap.js",
+    "check:server": "node server/scripts/checkServerSetup.js"
   },
   "keywords": [
     "delivery",

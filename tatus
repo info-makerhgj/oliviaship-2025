@@ -1,0 +1,141 @@
+warning: in the working copy of 'server/utils/scrapers/sheinScraper.js', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/server/utils/scrapers/sheinScraper.js b/server/utils/scrapers/sheinScraper.js[m
+[1mindex 7080ecf..db29c96 100644[m
+[1m--- a/server/utils/scrapers/sheinScraper.js[m
+[1m+++ b/server/utils/scrapers/sheinScraper.js[m
+[36m@@ -316,27 +316,73 @@[m [mexport const scrapeShein = async (url) => {[m
+     [m
+     const cleanUrl = urlObj.origin + urlObj.pathname + (urlObj.search || '');[m
+     [m
+[31m-    // استخدام HTML scraping كطريقة أولى (أسرع وأقل اكتشافاً من Puppeteer)[m
+[31m-    // Puppeteer يسبب reCAPTCHA، لذلك نستخدمه فقط كـ fallback[m
+[31m-    console.log(`🚀 Using HTML scraping for Shein (faster, less detection)`);[m
+[32m+[m[32m    // على السيرفر، استخدم ScraperAPI أولاً (أفضل من direct request)[m
+[32m+[m[32m    const isProduction = process.env.NODE_ENV === 'production';[m
+[32m+[m[32m    const hasScraperAPI = !!process.env.SCRAPERAPI_KEY;[m
+[32m+[m[41m    [m
+[32m+[m[32m    console.log(`🚀 Shein scraper - Environment: ${isProduction ? 'Production' : 'Development'}, ScraperAPI: ${hasScraperAPI ? 'Available' : 'Not available'}`);[m
+[32m+[m[41m    [m
+[32m+[m[32m    let html = '';[m
+[32m+[m[32m    let usedScraperAPI = false;[m
+[32m+[m[41m    [m
+[32m+[m[32m    // محاولة 1: ScraperAPI (أفضل للسيرفرات)[m
+[32m+[m[32m    if (hasScraperAPI) {[m
+[32m+[m[32m      try {[m
+[32m+[m[32m        console.log(`🔄 Trying ScraperAPI for Shein...`);[m
+[32m+[m[32m        const scraperApiUrl = `http://api.scraperapi.com?api_key=${process.env.SCRAPERAPI_KEY}&url=${encodeURIComponent(cleanUrl)}&render=true&premium=true&country_code=sa`;[m
+[32m+[m[32m        const response = await axios.get(scraperApiUrl, {[m[41m [m
+[32m+[m[32m          timeout: 30000,[m
+[32m+[m[32m          headers: {[m
+[32m+[m[32m            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',[m
+[32m+[m[32m          },[m
+[32m+[m[32m        });[m
+[32m+[m[32m        html = response.data;[m
+[32m+[m[32m        usedScraperAPI = true;[m
+[32m+[m[32m        console.log(`✅ ScraperAPI success for Shein (${html?.length || 0} bytes)`);[m
+[32m+[m[32m      } catch (scraperError) {[m
+[32m+[m[32m        console.log(`⚠️ ScraperAPI failed for Shein: ${scraperError.message}`);[m
+[32m+[m[32m        if (scraperError.response) {[m
+[32m+[m[32m          console.log(`   Status: ${scraperError.response.status}`);[m
+[32m+[m[32m        }[m
+[32m+[m[32m      }[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    // محاولة 2: Direct request (fallback)[m
+[32m+[m[32m    if (!html || html.length < 1000) {[m
+[32m+[m[32m      try {[m
+[32m+[m[32m        console.log(`🔄 Trying direct request for Shein...`);[m
+[32m+[m[32m        const response = await axios.get(cleanUrl, {[m
+[32m+[m[32m          headers: {[m
+[32m+[m[32m            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',[m
+[32m+[m[32m            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',[m
+[32m+[m[32m            'Accept-Language': 'ar-SA,ar;q=0.9,en-US;q=0.8,en;q=0.7',[m
+[32m+[m[32m            'Accept-Encoding': 'gzip, deflate, br',[m
+[32m+[m[32m            'Connection': 'keep-alive',[m
+[32m+[m[32m            'Upgrade-Insecure-Requests': '1',[m
+[32m+[m[32m            'Referer': 'https://www.google.com/',[m
+[32m+[m[32m          },[m
+[32m+[m[32m          timeout: 15000,[m
+[32m+[m[32m          maxRedirects: 5,[m
+[32m+[m[32m        });[m
+[32m+[m[32m        html = response.data;[m
+[32m+[m[32m        console.log(`✅ Direct request success for Shein (${html?.length || 0} bytes)`);[m
+[32m+[m[32m      } catch (directError) {[m
+[32m+[m[32m        console.log(`⚠️ Direct request failed for Shein: ${directError.message}`);[m
+[32m+[m[32m      }[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    // التحقق من وجود HTML[m
+[32m+[m[32m    if (!html || html.length < 1000) {[m
+[32m+[m[32m      console.log(`❌ Failed to fetch Shein page (${html?.length || 0} bytes)`);[m
+[32m+[m[32m      return {[m
+[32m+[m[32m        success: false,[m
+[32m+[m[32m        error: 'فشل في جلب صفحة المنتج من Shein',[m
+[32m+[m[32m        details: usedScraperAPI ? 'ScraperAPI و Direct request فشلا' : 'Direct request فشل، ScraperAPI غير متوفر',[m
+[32m+[m[32m        suggestion: hasScraperAPI ? 'تحقق من رصيد ScraperAPI' : 'أضف SCRAPERAPI_KEY للحصول على نتائج أفضل',[m
+[32m+[m[32m      };[m
+[32m+[m[32m    }[m
+     [m
+     try {[m
+[31m-      // جلب HTML مباشرة[m
+[31m-      const response = await axios.get(cleanUrl, {[m
+[31m-        headers: {[m
+[31m-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',[m
+[31m-          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',[m
+[31m-          'Accept-Language': 'ar-SA,ar;q=0.9,en-US;q=0.8,en;q=0.7',[m
+[31m-          'Accept-Encoding': 'gzip, deflate, br',[m
+[31m-          'Connection': 'keep-alive',[m
+[31m-          'Upgrade-Insecure-Requests': '1',[m
+[31m-          'Referer': 'https://www.google.com/',[m
+[31m-        },[m
+[31m-        timeout: 15000,[m
+[31m-        maxRedirects: 5,[m
+[31m-      });[m
+[31m-      [m
+[31m-      const html = response.data;[m
+       const $ = cheerio.load(html);[m
+       [m
+       // استخراج البيانات[m
+[36m@@ -356,6 +402,8 @@[m [mexport const scrapeShein = async (url) => {[m
+       [m
+       // البحث عن السعر في scripts[m
+       const scripts = $('script');[m
+[32m+[m[32m      console.log(`🔍 Searching for price in ${scripts.length} scripts...`);[m
+[32m+[m[41m      [m
+       for (let i = 0; i < scripts.length; i++) {[m
+         const scriptText = $(scripts[i]).html();[m
+         if (!scriptText || scriptText.length < 100) continue;[m
+[36m@@ -389,6 +437,7 @@[m [mexport const scrapeShein = async (url) => {[m
+               const foundPrice = findPrice(jsonData);[m
+               if (foundPrice) {[m
+                 price = foundPrice;[m
+[32m+[m[32m                console.log(`✅ Price found in JSON: ${price}`);[m
+                 break;[m
+               }[m
+             } catch (e) {[m
+[36m@@ -399,26 +448,6 @@[m [mexport const scrapeShein = async (url) => {[m
+         if (price > 0) break;[m
+       }[m
+       [m
+[31m-      // إذا لم يتم العثور على السعر، استخدام ScraperAPI[m
+[31m-      if (price === 0 && process.env.SCRAPERAPI_KEY) {[m
+[31m-        console.log(`🔄 Trying ScraperAPI for price...`);[m
+[31m-        try {[m
+[31m-          const scraperApiUrl = `http://api.scraperapi.com?api_key=${process.env.SCRAPERAPI_KEY}&url=${encodeURIComponent(cleanUrl)}&render=true&wait=3000`;[m
+[31m-          const apiResponse = await axios.get(scraperApiUrl, { timeout: 20000 });[m
+[31m-          const apiHtml = apiResponse.data;[m
+[31m-          const $api = cheerio.load(apiHtml);[m
+[31m-          [m
+[31m-          // البحث عن السعر في HTML من ScraperAPI[m
+[31m-          const priceText = $api('#productMainPriceId, #productPriceId, .productPrice_main').first().text().trim();[m
+[31m-          const priceMatch = priceText.match(/([\d,]+\.?\d*)/);[m
+[31m-          if (priceMatch) {[m
+[31m-            price = parseFloat(priceMatch[1].replace(/,/g, ''));[m
+[31m-          }[m
+[31m-        } catch (e) {[m
+[31m-          console.log(`⚠️ ScraperAPI failed: ${e.message}`);[m
+[31m-        }[m
+[31m-      }[m
+[31m-      [m
+       // تحويل العملة إلى SAR[m
+       let finalP
