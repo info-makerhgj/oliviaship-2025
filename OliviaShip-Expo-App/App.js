@@ -15,8 +15,9 @@ import {
 import * as Clipboard from 'expo-clipboard';
 import { WebView } from 'react-native-webview';
 import { StatusBar } from 'expo-status-bar';
+import { APP_CONFIG } from './config';
 
-const WEBSITE_URL = 'http://192.168.1.111:5174';
+const WEBSITE_URL = APP_CONFIG.WEBSITE_URL;
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 export default function App() {
@@ -98,7 +99,7 @@ export default function App() {
           const linkDomain = new URL(url).hostname;
           
           // Check if it's an external link (different domain)
-          if (linkDomain !== currentDomain && linkDomain !== 'localhost' && linkDomain !== '192.168.1.111') {
+          if (linkDomain !== currentDomain && linkDomain !== 'www.oliviaship.com' && linkDomain !== 'oliviaship.com') {
             e.preventDefault();
             window.ReactNativeWebView.postMessage(JSON.stringify({
               type: 'OPEN_STORE',
@@ -117,15 +118,30 @@ export default function App() {
       <View style={styles.splashContainer}>
         <StatusBar style="light" />
         <Animated.View style={[styles.splashContent, { opacity: fadeAnim }]}>
+          {/* Logo */}
           <Image
             source={require('./assets/logo.png')}
             style={styles.logoImage}
             resizeMode="contain"
           />
-          <Text style={styles.splashTitle}>أوليفيا شيب</Text>
-          <Text style={styles.splashTitleEn}>Olivia Ship</Text>
-          <Text style={styles.splashSubtitle}>خدمة التوصيل العالمية</Text>
-          <ActivityIndicator size="large" color="#fff" style={styles.splashLoader} />
+          
+          {/* App Name */}
+          <Text style={styles.splashTitle}>{APP_CONFIG.APP_NAME}</Text>
+          
+          {/* How it works steps */}
+          <View style={styles.stepsContainer}>
+            {APP_CONFIG.STEPS.map((step, index) => (
+              <View key={index} style={styles.stepItem}>
+                <Text style={styles.stepIcon}>{step.icon}</Text>
+                <View style={styles.stepTextContainer}>
+                  <Text style={styles.stepTitle}>{step.title}</Text>
+                  <Text style={styles.stepDescription}>{step.description}</Text>
+                </View>
+              </View>
+            ))}
+          </View>
+          
+          <ActivityIndicator size="large" color={APP_CONFIG.COLORS.primary} style={styles.splashLoader} />
         </Animated.View>
       </View>
     );
@@ -139,7 +155,7 @@ export default function App() {
       <View style={[styles.mainWebView, storeUrl && { height: SCREEN_HEIGHT - storeHeight - 40 }]}>
         {loading && (
           <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#d946ef" />
+            <ActivityIndicator size="large" color={APP_CONFIG.COLORS.primary} />
             <Text style={styles.loadingText}>جاري التحميل...</Text>
           </View>
         )}
@@ -175,8 +191,8 @@ export default function App() {
             domStorageEnabled={true}
             onShouldStartLoadWithRequest={(request) => {
               // Check if it's an external link
-              const currentDomain = WEBSITE_URL.includes('localhost') ? 'localhost' : '192.168.1.111';
-              const isExternal = !request.url.includes(currentDomain) && 
+              const isOwnDomain = request.url.includes('oliviaship.com');
+              const isExternal = !isOwnDomain && 
                                 !request.url.startsWith('about:') &&
                                 !request.url.startsWith('data:');
               
@@ -237,7 +253,7 @@ export default function App() {
             onMessage={handleMessage}
             renderLoading={() => (
               <View style={styles.storeLoading}>
-                <ActivityIndicator size="small" color="#d946ef" />
+                <ActivityIndicator size="small" color={APP_CONFIG.COLORS.primary} />
               </View>
             )}
           />
@@ -250,37 +266,60 @@ export default function App() {
 const styles = StyleSheet.create({
   splashContainer: {
     flex: 1,
-    backgroundColor: '#1a1a2e',
+    backgroundColor: APP_CONFIG.COLORS.dark,
     justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: 20,
   },
   splashContent: {
     alignItems: 'center',
+    width: '100%',
   },
   logoImage: {
-    width: 150,
-    height: 150,
-    marginBottom: 30,
+    width: 120,
+    height: 120,
+    marginBottom: 20,
   },
   splashTitle: {
-    fontSize: 42,
+    fontSize: 36,
     fontWeight: 'bold',
     color: '#fff',
-    marginBottom: 5,
+    marginBottom: 40,
   },
-  splashTitleEn: {
+  stepsContainer: {
+    width: '100%',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  stepItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: APP_CONFIG.COLORS.primary,
+  },
+  stepIcon: {
     fontSize: 32,
-    fontWeight: '600',
-    color: '#d946ef',
-    marginBottom: 15,
+    marginRight: 16,
   },
-  splashSubtitle: {
-    fontSize: 18,
+  stepTextContainer: {
+    flex: 1,
+  },
+  stepTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
     color: '#fff',
-    opacity: 0.8,
+    marginBottom: 4,
+  },
+  stepDescription: {
+    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.7)',
   },
   splashLoader: {
-    marginTop: 40,
+    marginTop: 30,
   },
   container: {
     flex: 1,
@@ -331,7 +370,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   retryButton: {
-    backgroundColor: '#d946ef',
+    backgroundColor: APP_CONFIG.COLORS.primary,
     paddingHorizontal: 30,
     paddingVertical: 15,
     borderRadius: 10,

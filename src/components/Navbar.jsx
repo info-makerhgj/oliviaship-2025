@@ -148,7 +148,7 @@ export default function Navbar() {
                 key={settings.general.logo} // Force re-render when logo changes
                 src={settings.general.logo.startsWith('data:') ? settings.general.logo : (settings.general.logo.startsWith('/uploads/') ? `/api${settings.general.logo}` : settings.general.logo)}
                 alt="Logo"
-                className="h-10 w-auto object-contain"
+                className="h-8 w-auto object-contain"
                 onError={(e) => {
                   e.target.style.display = 'none';
                   const fallback = e.target.nextElementSibling;
@@ -165,8 +165,8 @@ export default function Navbar() {
                 }}
               />
             ) : null}
-            <div className={`gradient-dynamic w-10 h-10 rounded-lg flex items-center justify-center ${settings?.general?.logo ? 'hidden' : ''}`}>
-              <FiPackage className="text-white text-lg" />
+            <div className={`gradient-dynamic w-8 h-8 rounded-lg flex items-center justify-center ${settings?.general?.logo ? 'hidden' : ''}`}>
+              <FiPackage className="text-white text-base" />
             </div>
             <div>
               <div className="text-base font-bold text-primary-dynamic">{settings?.general?.siteName?.split(' - ')[0] || 'Olivia Ship'}</div>
@@ -236,20 +236,51 @@ export default function Navbar() {
         {mobileMenuOpen && (
           <div className="lg:hidden py-4 border-t border-gray-100">
             <div className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-4 py-3 rounded-lg font-medium transition-colors ${
-                    isActive(link.to)
-                      ? 'bg-primary-50 text-primary-dynamic'
-                      : 'text-gray-700 hover:bg-gray-50'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {/* Important Pages Only */}
+              <Link
+                to="/about"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                  isActive('/about')
+                    ? 'bg-primary-50 text-primary-dynamic'
+                    : 'text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                من نحن
+              </Link>
+              <Link
+                to="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                  isActive('/contact')
+                    ? 'bg-primary-50 text-primary-dynamic'
+                    : 'text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                اتصل بنا
+              </Link>
+              <Link
+                to="/terms"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                  isActive('/terms')
+                    ? 'bg-primary-50 text-primary-dynamic'
+                    : 'text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                الشروط والأحكام
+              </Link>
+              <Link
+                to="/privacy"
+                onClick={() => setMobileMenuOpen(false)}
+                className={`px-4 py-3 rounded-lg font-medium transition-colors ${
+                  isActive('/privacy')
+                    ? 'bg-primary-50 text-primary-dynamic'
+                    : 'text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                سياسة الخصوصية
+              </Link>
               <div className="border-t border-gray-100 mt-2 pt-2">
                 {isAuthenticated ? (
                   <>
@@ -277,7 +308,7 @@ export default function Navbar() {
                       className="flex items-center gap-2 px-4 py-3 rounded-lg hover:bg-gray-50"
                     >
                       <FiUser />
-                      لوحة التحكم
+                      {user?.role === 'admin' ? 'الإدارة' : 'حسابي'}
                     </Link>
                   </>
                 ) : (

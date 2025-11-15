@@ -54,143 +54,164 @@ export default function CustomerDashboard() {
   }
 
   return (
-    <div>
+    <div className="max-w-6xl mx-auto">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-xl font-bold mb-2 text-gradient">مرحباً بك!</h1>
-        <p className="text-gray-600 text-sm">إليك ملخص طلباتك وإحصائياتك</p>
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold mb-2 text-gray-900">
+          مرحباً بك! 👋
+        </h1>
+        <p className="text-gray-600 text-sm md:text-base">تابع طلباتك وإحصائياتك من هنا</p>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
-        <div className="card bg-gradient-to-br from-primary-500 to-primary-700 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-white bg-opacity-20 p-2 md:p-3 rounded-xl">
-              <FiPackage className="text-xl md:text-2xl" />
+      {/* Stats Cards - Mobile Optimized */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 md:mb-8">
+        {/* Total Orders */}
+        <div className="bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="flex flex-col items-center text-center text-white">
+            <div className="bg-white/20 backdrop-blur-sm p-3 md:p-4 rounded-xl mb-3">
+              <FiPackage className="text-2xl md:text-3xl" />
             </div>
+            <div className="text-3xl md:text-4xl font-bold mb-1">{stats.total || 0}</div>
+            <div className="text-xs md:text-sm text-white/90 font-medium">إجمالي الطلبات</div>
           </div>
-          <div className="text-lg md:text-xl font-bold mb-1">{stats.total || 0}</div>
-          <div className="text-primary-100 text-xs">إجمالي الطلبات</div>
         </div>
 
-        <div className="card bg-gradient-to-br from-yellow-400 to-yellow-600 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-white bg-opacity-20 p-2 md:p-3 rounded-xl">
-              <FiClock className="text-xl md:text-2xl" />
+        {/* Pending */}
+        <div className="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="flex flex-col items-center text-center text-white">
+            <div className="bg-white/20 backdrop-blur-sm p-3 md:p-4 rounded-xl mb-3">
+              <FiClock className="text-2xl md:text-3xl" />
             </div>
+            <div className="text-3xl md:text-4xl font-bold mb-1">{stats.pending || 0}</div>
+            <div className="text-xs md:text-sm text-white/90 font-medium">قيد الانتظار</div>
           </div>
-          <div className="text-lg md:text-xl font-bold mb-1">{stats.pending || 0}</div>
-          <div className="text-yellow-100 text-xs">قيد الانتظار</div>
         </div>
 
-        <div className="card bg-gradient-to-br from-blue-500 to-blue-700 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-white bg-opacity-20 p-2 md:p-3 rounded-xl">
-              <FiTrendingUp className="text-xl md:text-2xl" />
+        {/* Processing */}
+        <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="flex flex-col items-center text-center text-white">
+            <div className="bg-white/20 backdrop-blur-sm p-3 md:p-4 rounded-xl mb-3">
+              <FiTrendingUp className="text-2xl md:text-3xl" />
             </div>
+            <div className="text-3xl md:text-4xl font-bold mb-1">{stats.processing || 0}</div>
+            <div className="text-xs md:text-sm text-white/90 font-medium">قيد التنفيذ</div>
           </div>
-          <div className="text-lg md:text-xl font-bold mb-1">{stats.processing || 0}</div>
-          <div className="text-blue-100 text-xs">قيد التنفيذ</div>
         </div>
 
-        <div className="card bg-gradient-to-br from-green-500 to-green-700 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div className="bg-white bg-opacity-20 p-2 md:p-3 rounded-xl">
-              <FiCheckCircle className="text-xl md:text-2xl" />
+        {/* Delivered */}
+        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-2xl p-4 md:p-6 shadow-lg hover:shadow-xl transition-all">
+          <div className="flex flex-col items-center text-center text-white">
+            <div className="bg-white/20 backdrop-blur-sm p-3 md:p-4 rounded-xl mb-3">
+              <FiCheckCircle className="text-2xl md:text-3xl" />
             </div>
+            <div className="text-3xl md:text-4xl font-bold mb-1">{stats.delivered || 0}</div>
+            <div className="text-xs md:text-sm text-white/90 font-medium">مكتملة</div>
           </div>
-          <div className="text-lg md:text-xl font-bold mb-1">{stats.delivered || 0}</div>
-          <div className="text-green-100 text-xs">مكتملة</div>
         </div>
       </div>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+      {/* Quick Actions - Modern Design */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-6 md:mb-8">
         <Link
-          to="/order"
-          className="card-hover p-6 flex items-center gap-4 group"
+          to="/cart"
+          className="bg-gradient-to-br from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 rounded-2xl p-5 md:p-6 flex items-center gap-4 group shadow-lg hover:shadow-xl transition-all text-white"
         >
-          <div className="bg-primary-100 group-hover:bg-primary-200 p-4 rounded-xl transition-colors">
-            <FiShoppingBag className="text-primary-600 text-2xl" />
+          <div className="bg-white/20 backdrop-blur-sm p-3 md:p-4 rounded-xl group-hover:scale-110 transition-transform">
+            <FiShoppingBag className="text-2xl md:text-3xl" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-sm mb-1">طلب منتج جديد</h3>
-            <p className="text-gray-600 text-xs">اطلب منتجاتك من المتاجر العالمية</p>
+            <h3 className="font-bold text-base md:text-lg mb-1">اطلب الآن</h3>
+            <p className="text-white/90 text-xs md:text-sm">تسوق من المتاجر العالمية</p>
           </div>
         </Link>
 
         <Link
           to="/dashboard/orders"
-          className="card-hover p-6 flex items-center gap-4 group"
+          className="bg-white border-2 border-gray-200 hover:border-primary-300 rounded-2xl p-5 md:p-6 flex items-center gap-4 group shadow-md hover:shadow-lg transition-all"
         >
-          <div className="bg-blue-100 group-hover:bg-blue-200 p-4 rounded-xl transition-colors">
-            <FiPackage className="text-blue-600 text-2xl" />
+          <div className="bg-primary-50 group-hover:bg-primary-100 p-3 md:p-4 rounded-xl transition-colors">
+            <FiPackage className="text-primary-600 text-2xl md:text-3xl" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-sm mb-1">عرض جميع الطلبات</h3>
-            <p className="text-gray-600 text-xs">شاهد ومتابع جميع طلباتك</p>
+            <h3 className="font-bold text-base md:text-lg mb-1 text-gray-900">طلباتي</h3>
+            <p className="text-gray-600 text-xs md:text-sm">شاهد وتابع جميع طلباتك</p>
           </div>
         </Link>
       </div>
 
-      {/* Recent Orders */}
-      <div className="card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-bold">الطلبات الأخيرة</h2>
-          <Link to="/dashboard/orders" className="text-primary-600 hover:underline text-sm font-medium">
+      {/* Recent Orders - Modern Cards */}
+      <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 md:p-6">
+        <div className="flex items-center justify-between mb-4 md:mb-6">
+          <h2 className="text-lg md:text-xl font-bold text-gray-900">آخر الطلبات</h2>
+          <Link 
+            to="/dashboard/orders" 
+            className="text-primary-600 hover:text-primary-700 text-sm md:text-base font-semibold flex items-center gap-1 hover:gap-2 transition-all"
+          >
             عرض الكل
+            <span>←</span>
           </Link>
         </div>
 
         {recentOrders.length > 0 ? (
-          <div className="space-y-4">
+          <div className="space-y-3 md:space-y-4">
             {recentOrders.map((order) => (
               <Link
                 key={order._id}
                 to={`/dashboard/orders/${order._id}`}
-                className="block p-4 border border-gray-200 rounded-xl hover:shadow-lg hover:border-primary-300 transition-all"
+                className="block p-4 md:p-5 bg-gray-50 hover:bg-white border-2 border-gray-100 hover:border-primary-200 rounded-xl hover:shadow-md transition-all group"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <span className="font-bold text-primary-600">#{order.orderNumber}</span>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
-                        {getStatusText(order.status)}
-                      </span>
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2 md:gap-3">
+                    <div className="bg-primary-100 p-2 rounded-lg group-hover:bg-primary-200 transition-colors">
+                      <FiPackage className="text-primary-600 text-lg md:text-xl" />
                     </div>
-                    <p className="text-gray-700 font-medium mb-1 text-sm">
-                      {order.type === 'smartCart' 
-                        ? order.products && order.products.length > 0
-                          ? `${order.products[0].name}${order.products.length > 1 ? ` + ${order.products.length - 1} منتج آخر` : ''}`
-                          : 'منتجات متعددة'
-                        : order.product?.name || 'منتج غير محدد'}
-                    </p>
-                    <p className="text-sm text-gray-500">
-                      {new Date(order.createdAt).toLocaleDateString('ar-YE', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
-                    </p>
+                    <div>
+                      <span className="font-bold text-sm md:text-base text-gray-900">#{order.orderNumber}</span>
+                    </div>
                   </div>
+                  <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusColor(order.status)}`}>
+                    {getStatusText(order.status)}
+                  </span>
+                </div>
+                
+                <p className="text-gray-700 font-medium mb-2 text-sm md:text-base line-clamp-1">
+                  {order.type === 'smartCart' 
+                    ? order.products && order.products.length > 0
+                      ? `${order.products[0].name}${order.products.length > 1 ? ` + ${order.products.length - 1} منتج` : ''}`
+                      : 'منتجات متعددة'
+                    : order.product?.name || 'منتج غير محدد'}
+                </p>
+                
+                <div className="flex items-center justify-between">
+                  <p className="text-xs md:text-sm text-gray-500">
+                    {new Date(order.createdAt).toLocaleDateString('ar-YE', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}
+                  </p>
                   {order.pricing && (
-                    <div className="text-left sm:text-right">
-                      <p className="text-lg font-bold text-primary-600">
-                        {formatCurrency(order.pricing.totalInYER, 'YER')}
-                      </p>
-                    </div>
+                    <p className="text-base md:text-lg font-bold text-primary-600">
+                      {formatCurrency(order.pricing.totalInYER, 'YER')}
+                    </p>
                   )}
                 </div>
               </Link>
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <FiPackage className="text-6xl text-gray-300 mx-auto mb-4" />
-            <p className="text-xl text-gray-600 mb-4">لا توجد طلبات بعد</p>
-            <Link to="/order" className="btn-primary inline-flex items-center gap-2">
-              <FiShoppingBag />
-              طلب منتج الآن
+          <div className="text-center py-12 md:py-16">
+            <div className="bg-gray-100 w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FiPackage className="text-4xl md:text-5xl text-gray-400" />
+            </div>
+            <p className="text-lg md:text-xl font-semibold text-gray-700 mb-2">لا توجد طلبات بعد</p>
+            <p className="text-sm md:text-base text-gray-500 mb-6">ابدأ التسوق الآن واطلب منتجاتك المفضلة</p>
+            <Link 
+              to="/cart" 
+              className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-bold px-6 md:px-8 py-3 md:py-4 rounded-xl shadow-lg hover:shadow-xl transition-all"
+            >
+              <FiShoppingBag className="text-lg md:text-xl" />
+              ابدأ التسوق
             </Link>
           </div>
         )}

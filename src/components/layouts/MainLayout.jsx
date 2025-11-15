@@ -1,8 +1,10 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import Navbar from '../Navbar';
 import Footer from '../Footer';
 import { settingsAPI } from '../../utils/api';
+import { FiHome, FiShoppingBag, FiPackage, FiUser, FiGrid } from 'react-icons/fi';
+import { useAuthStore } from '../../store/authStore';
 
 export default function MainLayout() {
   useEffect(() => {
@@ -68,13 +70,82 @@ export default function MainLayout() {
     return '#' + (0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1);
   };
 
+  const location = useLocation();
+  const { isAuthenticated } = useAuthStore();
+
+  // Bottom Navigation Items
+  const navItems = [
+    { 
+      path: '/', 
+      icon: FiHome, 
+      label: 'الرئيسية',
+      exact: true
+    },
+    { 
+      path: '/cart', 
+      icon: FiShoppingBag, 
+      label: 'السلة'
+    },
+    { 
+      path: '/points', 
+      icon: FiGrid, 
+      label: 'النقاط'
+    },
+    { 
+      path: '/track', 
+      icon: FiPackage, 
+      label: 'تتبع'
+    },
+    { 
+      path: isAuthenticated ? '/dashboard' : '/login', 
+      icon: FiUser, 
+      label: isAuthenticated ? 'حسابي' : 'دخول'
+    },
+  ];
+
+  const isActive = (path, exact = false) => {
+    if (exact) {
+      return location.pathname === path;
+    }
+    return location.pathname.startsWith(path);
+  };
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      <main className="flex-grow min-h-0">
+      <main className="flex-grow pb-20 md:pb-0">
         <Outlet />
       </main>
       <Footer />
+      
+      {/* Bottom Navigation - Mobile Only - Compact */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="grid grid-cols-5 h-14">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const active = isActive(item.path, item.exact);
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`flex flex-col items-center justify-center gap-0.5 transition-all ${
+                  active 
+                    ? 'text-primary-600' 
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                <Icon className={`text-xl ${active ? 'scale-110' : ''} transition-transform`} />
+                <span className={`text-[10px] font-medium ${active ? 'font-bold' : ''}`}>
+                  {item.label}
+                </span>
+                {active && (
+                  <div className="absolute bottom-0 w-10 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-t-full"></div>
+                )}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 }

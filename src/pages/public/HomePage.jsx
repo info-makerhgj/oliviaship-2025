@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiShoppingBag, FiTruck, FiShield, FiClock, FiCheck, FiPackage, FiDollarSign, FiGlobe, FiZap, FiStar, FiArrowLeft } from 'react-icons/fi';
 import { FaAmazon, FaShoppingCart } from 'react-icons/fa';
-import { SiShein, SiAliexpress } from 'react-icons/si';
 import SEO from '../../components/SEO';
 import StructuredData from '../../components/StructuredData';
 
@@ -21,13 +20,13 @@ export default function HomePage() {
     },
     { 
       name: 'SHEIN', 
-      icon: SiShein,
+      icon: FiPackage,
       color: 'bg-gradient-to-br from-pink-400 to-pink-600',
       desc: 'أحدث الموضة'
     },
     { 
       name: 'AliExpress', 
-      icon: SiAliexpress,
+      icon: FiShoppingBag,
       color: 'bg-gradient-to-br from-red-500 to-red-700',
       desc: 'أسعار منافسة'
     },

@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/authStore';
 import { FiHome, FiPackage, FiUser, FiSettings, FiUsers, FiLogOut, FiGlobe, FiMenu, FiX, FiShoppingCart, FiDollarSign, FiCreditCard, FiMapPin, FiShoppingBag, FiShield, FiMail, FiMessageSquare, FiInbox, FiTag, FiBarChart2, FiFileText } from 'react-icons/fi';
 import { useState, useEffect, useCallback } from 'react';
-import { cartAPI, authAPI, contactAPI } from '../../utils/api';
+import { cartAPI, authAPI, contactAPI, settingsAPI } from '../../utils/api';
 import { canAccessRoute } from '../../utils/permissions';
 
 export default function DashboardLayout() {
@@ -14,6 +14,8 @@ export default function DashboardLayout() {
   const [userPoint, setUserPoint] = useState(null);
   const [agentStatus, setAgentStatus] = useState(null); // Track agent status
   const [hasContactReplies, setHasContactReplies] = useState(false);
+  const [settings, setSettings] = useState(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const isAdmin = user?.role === 'admin';
   // Only show agent dashboard if agent is active
@@ -59,6 +61,19 @@ export default function DashboardLayout() {
     checkAgentStatus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id, user?.role]); // Only re-run if user ID or role changes
+
+  // Load settings
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const res = await settingsAPI.get();
+        setSettings(res.data.settings);
+      } catch (error) {
+        console.error('Failed to load settings', error);
+      }
+    };
+    loadSettings();
+  }, []);
 
   // Load fresh user data from server to get updated role (once on mount)
   useEffect(() => {
@@ -208,22 +223,22 @@ export default function DashboardLayout() {
   const customerLinksBase = userPoint ? [
     // Point Manager - show point dashboard first
     { to: `/pos/${userPoint._id}`, icon: FiMapPin, label: `لوحة ${userPoint.name}`, isPointDashboard: true },
-    { to: '/dashboard', icon: FiHome, label: 'لوحة التحكم' },
+    { to: '/dashboard', icon: FiHome, label: 'الرئيسية' },
     { to: '/dashboard/orders', icon: FiPackage, label: 'طلباتي' },
-    { to: '/dashboard/stores', icon: FiShoppingBag, label: 'المتاجر المدعومة' },
-    { to: '/dashboard/wallet', icon: FiDollarSign, label: 'المحفظة' },
-    { to: '/dashboard/chat', icon: FiMessageSquare, label: 'الدردشة مع الدعم' },
-    { to: '/dashboard/contact-replies', icon: FiInbox, label: 'ردود على رسائلي', showOnlyIfHasReplies: true },
-    { to: '/dashboard/profile', icon: FiUser, label: 'الملف الشخصي' },
+    { to: '/dashboard/stores', icon: FiShoppingBag, label: 'المتاجر' },
+    { to: '/dashboard/wallet', icon: FiDollarSign, label: 'محفظتي' },
+    { to: '/dashboard/chat', icon: FiMessageSquare, label: 'الدعم' },
+    { to: '/dashboard/contact-replies', icon: FiInbox, label: 'رسائلي', showOnlyIfHasReplies: true },
+    { to: '/dashboard/profile', icon: FiUser, label: 'حسابي' },
   ] : [
     // Regular Customer
-    { to: '/dashboard', icon: FiHome, label: 'لوحة التحكم' },
+    { to: '/dashboard', icon: FiHome, label: 'الرئيسية' },
     { to: '/dashboard/orders', icon: FiPackage, label: 'طلباتي' },
-    { to: '/dashboard/stores', icon: FiShoppingBag, label: 'المتاجر المدعومة' },
-    { to: '/dashboard/wallet', icon: FiDollarSign, label: 'المحفظة' },
-    { to: '/dashboard/chat', icon: FiMessageSquare, label: 'الدردشة مع الدعم' },
-    { to: '/dashboard/contact-replies', icon: FiInbox, label: 'ردود على رسائلي', showOnlyIfHasReplies: true },
-    { to: '/dashboard/profile', icon: FiUser, label: 'الملف الشخصي' },
+    { to: '/dashboard/stores', icon: FiShoppingBag, label: 'المتاجر' },
+    { to: '/dashboard/wallet', icon: FiDollarSign, label: 'محفظتي' },
+    { to: '/dashboard/chat', icon: FiMessageSquare, label: 'الدعم' },
+    { to: '/dashboard/contact-replies', icon: FiInbox, label: 'رسائلي', showOnlyIfHasReplies: true },
+    { to: '/dashboard/profile', icon: FiUser, label: 'حسابي' },
   ];
 
   // Filter links based on conditions
@@ -340,12 +355,9 @@ export default function DashboardLayout() {
         </nav>
       </aside>
 
-      {/* Sidebar - Mobile */}
+      {/* Sidebar - Mobile (Hidden - Using Bottom Nav Instead) */}
       <aside
-        className={`fixed right-0 top-0 h-full w-64 bg-white shadow-2xl z-50 transform transition-transform duration-150 ease-out lg:hidden flex flex-col ${
-          mobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        }`}
-        style={{ willChange: 'transform' }}
+        className="hidden"
       >
         <div className="p-3 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-2">
@@ -418,37 +430,107 @@ export default function DashboardLayout() {
 
       {/* Main Content */}
       <div className="flex-1 lg:mr-64">
-        {/* Mobile Header */}
-        <div className="lg:hidden bg-white shadow-md sticky top-0 z-20 px-3 py-4 pt-12 flex items-center justify-between border-b border-gray-200">
-          <button
-            onClick={() => setMobileMenuOpen(true)}
-            className="p-1.5 hover:bg-gray-100 rounded-lg"
-          >
-            <FiMenu className="text-lg" />
-          </button>
-          <h1 className="text-base font-bold text-primary-600">أوليفيا شيب</h1>
-          <div className="flex items-center gap-1.5">
-            {/* Show cart only for regular customers (not admins, agents or point managers) */}
-            {!isAdmin && !isAgent && !userPoint && (
-              <Link
-                to="/cart"
-                className="relative p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-                onClick={loadCartCount}
-              >
-                <FiShoppingCart className="text-lg text-gray-700" />
-                {cartItemsCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 bg-primary-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
-                    {cartItemsCount > 9 ? '9+' : cartItemsCount}
-                  </span>
-                )}
-              </Link>
-            )}
-            <Link
-              to="/dashboard/profile"
-              className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <FiUser className="text-lg text-gray-700" />
+        {/* Mobile Header - Compact */}
+        <div className="lg:hidden bg-white shadow-sm sticky top-0 z-20 px-3 py-2 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            {/* Logo & Name */}
+            <Link to="/" className="flex items-center gap-2">
+              {settings?.general?.logo ? (
+                <img
+                  src={settings.general.logo.startsWith('data:') ? settings.general.logo : (settings.general.logo.startsWith('/uploads/') ? `/api${settings.general.logo}` : settings.general.logo)}
+                  alt="Logo"
+                  className="h-8 w-auto object-contain"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <div className="bg-gradient-to-br from-primary-600 to-secondary-500 w-8 h-8 rounded-lg flex items-center justify-center">
+                  <FiPackage className="text-white text-base" />
+                </div>
+              )}
+              <div>
+                <div className="text-sm font-bold text-primary-600 leading-tight">
+                  {settings?.general?.siteName?.split(' - ')[0] || 'Olivia Ship'}
+                </div>
+                <div className="text-[10px] text-gray-500 leading-tight">
+                  {isAdmin ? 'لوحة الإدارة' : 'حسابي'}
+                </div>
+              </div>
             </Link>
+
+            <div className="flex items-center gap-2">
+              {/* Cart Icon */}
+              {!isAdmin && !isAgent && !userPoint && (
+                <Link
+                  to="/cart"
+                  className="relative p-2 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center"
+                  onClick={loadCartCount}
+                >
+                  <FiShoppingCart className="text-xl text-gray-700" />
+                  {cartItemsCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 bg-primary-600 text-white text-[9px] w-3.5 h-3.5 rounded-full flex items-center justify-center font-bold">
+                      {cartItemsCount > 9 ? '9+' : cartItemsCount}
+                    </span>
+                  )}
+                </Link>
+              )}
+
+              {/* User Menu Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => setUserMenuOpen(!userMenuOpen)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <FiMenu className="text-xl text-gray-700" />
+                </button>
+
+                {/* Dropdown Menu */}
+                {userMenuOpen && (
+                  <>
+                    {/* Backdrop */}
+                    <div 
+                      className="fixed inset-0 z-40" 
+                      onClick={() => setUserMenuOpen(false)}
+                    ></div>
+                    
+                    {/* Menu */}
+                    <div className="absolute left-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                      <Link
+                        to="/dashboard/profile"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <FiUser className="text-gray-600" />
+                        <span className="text-sm font-medium text-gray-700">حسابي</span>
+                      </Link>
+                      
+                      <Link
+                        to="/"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                      >
+                        <FiGlobe className="text-gray-600" />
+                        <span className="text-sm font-medium text-gray-700">زيارة الموقع</span>
+                      </Link>
+                      
+                      <div className="border-t border-gray-100 my-2"></div>
+                      
+                      <button
+                        onClick={() => {
+                          setUserMenuOpen(false);
+                          handleLogout();
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-red-50 transition-colors text-red-600"
+                      >
+                        <FiLogOut />
+                        <span className="text-sm font-medium">تسجيل الخروج</span>
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
           </div>
         </div>
 
@@ -483,10 +565,41 @@ export default function DashboardLayout() {
         </div>
 
         {/* Content */}
-        <div className="p-4 md:p-6 lg:p-8">
+        <div className="p-4 md:p-6 lg:p-8 pb-20 lg:pb-8">
           <Outlet />
         </div>
       </div>
+
+      {/* Bottom Navigation - Mobile Only (Customer Dashboard) - Compact */}
+      {!isAdmin && !isAgent && (
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+          <div className="grid grid-cols-5 h-14">
+            {links.slice(0, 5).map((link) => {
+              const Icon = link.icon;
+              const isActive = location.pathname === link.to;
+              return (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`flex flex-col items-center justify-center gap-0.5 transition-all ${
+                    isActive 
+                      ? 'text-primary-600' 
+                      : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <Icon className={`text-xl ${isActive ? 'scale-110' : ''} transition-transform`} />
+                  <span className={`text-[10px] font-medium ${isActive ? 'font-bold' : ''}`}>
+                    {link.label}
+                  </span>
+                  {isActive && (
+                    <div className="absolute bottom-0 w-10 h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-t-full"></div>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+      )}
     </div>
   );
 }
