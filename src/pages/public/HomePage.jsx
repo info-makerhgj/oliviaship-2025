@@ -1,34 +1,111 @@
 import { Link } from 'react-router-dom';
-import { FiShoppingBag, FiTruck, FiShield, FiClock, FiCheck, FiTrendingUp, FiUsers, FiPackage } from 'react-icons/fi';
+import { FiShoppingBag, FiTruck, FiShield, FiClock, FiCheck, FiPackage, FiDollarSign, FiGlobe, FiZap, FiStar, FiArrowLeft } from 'react-icons/fi';
 import { FaAmazon, FaShoppingCart } from 'react-icons/fa';
+import { SiShein, SiAliexpress } from 'react-icons/si';
 import SEO from '../../components/SEO';
 import StructuredData from '../../components/StructuredData';
 
 export default function HomePage() {
   const stores = [
-    { name: 'Amazon', icon: FaAmazon, color: 'text-orange-500' },
-    { name: 'Noon', color: 'text-red-500' },
-    { name: 'SHEIN', color: 'text-pink-500' },
-    { name: 'AliExpress', color: 'text-red-600' },
-    { name: 'Temu', color: 'text-blue-600' },
+    { 
+      name: 'Amazon', 
+      icon: FaAmazon, 
+      color: 'bg-gradient-to-br from-orange-400 to-orange-600',
+      desc: 'ملايين المنتجات'
+    },
+    { 
+      name: 'Noon', 
+      icon: FiShoppingBag,
+      color: 'bg-gradient-to-br from-yellow-400 to-yellow-600',
+      desc: 'أفضل العروض'
+    },
+    { 
+      name: 'SHEIN', 
+      icon: SiShein,
+      color: 'bg-gradient-to-br from-pink-400 to-pink-600',
+      desc: 'أحدث الموضة'
+    },
+    { 
+      name: 'AliExpress', 
+      icon: SiAliexpress,
+      color: 'bg-gradient-to-br from-red-500 to-red-700',
+      desc: 'أسعار منافسة'
+    },
+    { 
+      name: 'Temu', 
+      icon: FiPackage,
+      color: 'bg-gradient-to-br from-blue-500 to-blue-700',
+      desc: 'تشكيلة واسعة'
+    },
+  ];
+
+  const howItWorks = [
+    { 
+      icon: FiShoppingBag, 
+      title: 'اختر منتجك', 
+      desc: 'تصفح المتاجر العالمية واختر ما يعجبك',
+      color: 'from-blue-500 to-blue-600'
+    },
+    { 
+      icon: FiDollarSign, 
+      title: 'احسب التكلفة', 
+      desc: 'نحسب لك السعر الشامل (المنتج + الشحن + الجمارك)',
+      color: 'from-green-500 to-green-600'
+    },
+    { 
+      icon: FiTruck, 
+      title: 'نشتري ونشحن', 
+      desc: 'نشتري المنتج ونشحنه من المتجر إلى مستودعنا',
+      color: 'from-purple-500 to-purple-600'
+    },
+    { 
+      icon: FiCheck, 
+      title: 'استلم طلبك', 
+      desc: 'نوصل المنتج لباب بيتك بأمان وسرعة',
+      color: 'from-pink-500 to-pink-600'
+    },
   ];
 
   const features = [
-    { icon: FiShoppingBag, title: 'طلب سهل', desc: 'الصق رابط المنتج واحصل على السعر فوراً' },
-    { icon: FiClock, title: 'حساب سريع', desc: 'حساب تلقائي للتكلفة الشاملة خلال ثوان' },
-    { icon: FiTruck, title: 'شحن موثوق', desc: 'شحن آمن وموثوق من المتاجر العالمية' },
-    { icon: FiShield, title: 'توصيل مضمون', desc: 'ضمان وصول المنتج بأمان إلى باب منزلك' },
+    { 
+      icon: FiZap, 
+      title: 'حساب فوري', 
+      desc: 'احسب تكلفة طلبك في ثوانٍ',
+      color: 'text-yellow-600',
+      bg: 'bg-yellow-50'
+    },
+    { 
+      icon: FiShield, 
+      title: 'شحن آمن', 
+      desc: 'ضمان وصول منتجاتك بأمان',
+      color: 'text-green-600',
+      bg: 'bg-green-50'
+    },
+    { 
+      icon: FiGlobe, 
+      title: 'متاجر عالمية', 
+      desc: 'نوصل من أشهر المتاجر العالمية',
+      color: 'text-blue-600',
+      bg: 'bg-blue-50'
+    },
+    { 
+      icon: FiStar, 
+      title: 'خدمة مميزة', 
+      desc: 'دعم عملاء 24/7 لخدمتك',
+      color: 'text-purple-600',
+      bg: 'bg-purple-50'
+    },
   ];
 
   const stats = [
-    { number: '10,000+', label: 'طلبات منفذة' },
-    { number: '5,000+', label: 'عميل سعيد' },
-    { number: '98%', label: 'معدل الرضا' },
-    { number: '24/7', label: 'خدمة متاحة' },
+    { number: '10,000+', label: 'طلب مكتمل', icon: FiPackage },
+    { number: '5,000+', label: 'عميل سعيد', icon: FiStar },
+    { number: '98%', label: 'رضا العملاء', icon: FiCheck },
+    { number: '24/7', label: 'دعم متواصل', icon: FiClock },
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gray-50">
       {/* SEO */}
       <SEO 
         title="الصفحة الرئيسية"
@@ -41,99 +118,85 @@ export default function HomePage() {
       <StructuredData type="website" />
       <StructuredData type="service" />
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 text-gray-800 py-20 md:py-32 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-          <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+      {/* Hero Section - Modern & Clear */}
+      <section className="bg-gradient-to-br from-primary-600 via-primary-500 to-secondary-500 text-white py-12 md:py-20 relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
         </div>
+        
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-2xl md:text-3xl font-bold mb-4 leading-tight bg-gradient-to-r from-blue-600 via-purple-400 to-pink-600 bg-clip-text text-transparent">
-              أوليفيا شيب - خدمة التوصيل الفاخر إلى اليمن
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6 text-sm">
+              <FiStar className="text-yellow-300" />
+              <span>الخدمة الأولى للتوصيل من المتاجر العالمية</span>
+            </div>
+
+            {/* Main Heading */}
+            <h1 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+              اطلب من أي متجر عالمي
+              <br />
+              <span className="text-yellow-300">ونوصلها لباب بيتك!</span>
             </h1>
-            <p className="text-sm md:text-base mb-6 text-gray-700 leading-relaxed">
-              نوصل منتجاتك من المتاجر العالمية الفاخرة مثل أمازون، نون، شي إن، علي إكسبريس والمزيد. 
+            
+            {/* Description */}
+            <p className="text-lg md:text-xl mb-8 text-white/90 leading-relaxed max-w-2xl mx-auto">
+              أمازون، نون، شي إن، علي إكسبريس وأكثر...
               <br className="hidden md:block" />
-              نحسب التكلفة الشاملة، نشتري المنتج، ونوصلها لك بأمان وثقة!
+              <span className="font-semibold">نحسب التكلفة، نشتري، ونوصل لك بأمان 🚀</span>
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/cart" className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-white hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 text-sm md:text-base px-6 py-3 rounded-xl inline-flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:scale-105">
-                <FiShoppingBag />
-                اذهب إلى السلة
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <Link 
+                to="/cart" 
+                className="bg-white text-primary-600 hover:bg-gray-50 text-base md:text-lg font-bold px-8 py-4 rounded-2xl inline-flex items-center justify-center gap-3 transition-all shadow-2xl hover:shadow-3xl hover:scale-105 group"
+              >
+                <FiShoppingBag className="text-xl group-hover:rotate-12 transition-transform" />
+                ابدأ التسوق الآن
+                <FiArrowLeft className="text-xl group-hover:-translate-x-1 transition-transform" />
               </Link>
-              <Link to="/track" className="bg-white text-gray-700 hover:bg-gray-50 border-2 border-purple-300 text-sm md:text-base px-6 py-3 rounded-xl inline-flex items-center justify-center gap-2 transition-all duration-300 shadow-md hover:shadow-lg">
-                <FiTruck />
+              <Link 
+                to="/track" 
+                className="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border-2 border-white/30 text-base md:text-lg font-semibold px-8 py-4 rounded-2xl inline-flex items-center justify-center gap-3 transition-all"
+              >
+                <FiTruck className="text-xl" />
                 تتبع طلبك
               </Link>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Stats Section */}
-      <section className="py-12 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 border-b border-purple-200">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, idx) => (
-              <div key={idx} className="text-center bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-shadow">
-                <div className="text-xl md:text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-400 bg-clip-text text-transparent mb-1">{stat.number}</div>
-                <div className="text-xs md:text-sm text-gray-600">{stat.label}</div>
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-white/80">
+              <div className="flex items-center gap-2">
+                <FiCheck className="text-green-300" />
+                <span>شحن آمن ومضمون</span>
               </div>
-            ))}
+              <div className="flex items-center gap-2">
+                <FiShield className="text-blue-300" />
+                <span>دفع عند الاستلام</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <FiClock className="text-yellow-300" />
+                <span>دعم 24/7</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
-      <section className="py-20 bg-white">
+      {/* Stats Section - Clean & Modern */}
+      <section className="py-8 bg-white border-b border-gray-100">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-xl md:text-2xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-400 to-pink-600 bg-clip-text text-transparent">كيف نعمل</h2>
-            <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
-              عملية بسيطة في 4 خطوات فقط
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, idx) => {
-              const Icon = feature.icon;
-              const cardColors = [
-                {
-                  gradient: 'from-blue-300 to-blue-400',
-                  bg: 'bg-blue-100',
-                  text: 'text-blue-600',
-                  border: 'border-blue-200'
-                },
-                {
-                  gradient: 'from-purple-300 to-purple-400',
-                  bg: 'bg-purple-100',
-                  text: 'text-purple-400',
-                  border: 'border-purple-200'
-                },
-                {
-                  gradient: 'from-pink-300 to-pink-400',
-                  bg: 'bg-pink-100',
-                  text: 'text-pink-600',
-                  border: 'border-pink-200'
-                },
-                {
-                  gradient: 'from-indigo-300 to-indigo-400',
-                  bg: 'bg-indigo-100',
-                  text: 'text-indigo-600',
-                  border: 'border-indigo-200'
-                }
-              ];
-              const color = cardColors[idx];
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {stats.map((stat, idx) => {
+              const Icon = stat.icon;
               return (
-                <div key={idx} className={`card-hover text-center group ${color.bg} border-2 ${color.border}`}>
-                  <div className={`bg-gradient-to-br ${color.gradient} w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                    <Icon className="text-white text-xl" />
-                  </div>
-                  <div className={`bg-white ${color.text} w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-3 font-bold text-sm shadow-md border-2 ${color.border}`}>
-                    {idx + 1}
-                  </div>
-                  <h3 className={`text-base md:text-lg font-bold mb-2 ${color.text}`}>{feature.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{feature.desc}</p>
+                <div key={idx} className="text-center p-4 rounded-xl hover:bg-gray-50 transition-colors group">
+                  <Icon className="text-3xl text-primary-600 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                  <div className="text-2xl md:text-3xl font-bold text-gray-900 mb-1">{stat.number}</div>
+                  <div className="text-xs md:text-sm text-gray-600">{stat.label}</div>
                 </div>
               );
             })}
@@ -141,68 +204,250 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Supported Stores */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* How It Works - Visual & Clear */}
+      <section className="py-16 md:py-24 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-xl md:text-2xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-400 to-pink-600 bg-clip-text text-transparent">المتاجر المدعومة</h2>
-            <p className="text-sm md:text-base text-gray-600">نوصل من جميع المتاجر العالمية الكبرى</p>
+            <h2 className="text-2xl md:text-4xl font-bold mb-3 text-gray-900">
+              كيف تعمل الخدمة؟
+            </h2>
+            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+              4 خطوات بسيطة توصلك لمنتجاتك المفضلة 🎯
+            </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 max-w-4xl mx-auto">
-            {stores.map((store, idx) => {
-              const Icon = store.icon || FiPackage;
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {howItWorks.map((step, idx) => {
+              const Icon = step.icon;
               return (
-                <div key={idx} className="card-hover text-center p-6">
-                  <Icon className={`text-3xl md:text-4xl mx-auto mb-3 ${store.color || 'text-gray-600'}`} />
-                  <h3 className="font-bold text-sm md:text-base">{store.name}</h3>
+                <div key={idx} className="relative">
+                  {/* Connector Line (Desktop only) */}
+                  {idx < howItWorks.length - 1 && (
+                    <div className="hidden lg:block absolute top-16 left-full w-full h-1 bg-gradient-to-r from-primary-300 to-transparent -translate-x-1/2 z-0"></div>
+                  )}
+                  
+                  {/* Card */}
+                  <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1 relative z-10 border-2 border-gray-100 hover:border-primary-200">
+                    {/* Step Number */}
+                    <div className="absolute -top-4 -right-4 w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 text-white rounded-full flex items-center justify-center font-bold text-lg shadow-lg">
+                      {idx + 1}
+                    </div>
+                    
+                    {/* Icon */}
+                    <div className={`w-16 h-16 bg-gradient-to-br ${step.color} rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg`}>
+                      <Icon className="text-white text-2xl" />
+                    </div>
+                    
+                    {/* Content */}
+                    <h3 className="text-lg md:text-xl font-bold mb-2 text-gray-900 text-center">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm md:text-base text-gray-600 leading-relaxed text-center">
+                      {step.desc}
+                    </p>
+                  </div>
                 </div>
               );
             })}
           </div>
+
+          {/* CTA Button */}
+          <div className="text-center mt-12">
+            <Link 
+              to="/cart" 
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-primary-600 to-secondary-600 text-white hover:from-primary-700 hover:to-secondary-700 text-base md:text-lg font-bold px-8 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all hover:scale-105"
+            >
+              <FiShoppingBag className="text-xl" />
+              ابدأ الآن مجاناً
+              <FiArrowLeft />
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Benefits */}
-      <section className="py-20 bg-white">
+      {/* Supported Stores - Eye-catching */}
+      <section className="py-16 md:py-24 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-xl md:text-2xl font-bold mb-3 bg-gradient-to-r from-blue-600 via-purple-400 to-pink-600 bg-clip-text text-transparent">لماذا نحن؟</h2>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {[
-                'حساب تلقائي شامل لجميع التكاليف',
-                'دعم عملاء متواصل على مدار الساعة',
-                'تتبع كامل لطلبك من الشراء حتى التوصيل',
-                'أسعار شفافة بدون مفاجآت',
-                'توصيل آمن ومضمون',
-                'دعم جميع طرق الدفع',
-              ].map((benefit, idx) => (
-                <div key={idx} className="flex items-start gap-4 card p-4 bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-blue-200 hover:border-purple-300 transition-colors">
-                  <FiCheck className="text-purple-500 text-lg flex-shrink-0 mt-0.5" />
-                  <p className="text-sm md:text-base font-medium text-gray-700">{benefit}</p>
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-4xl font-bold mb-3 text-gray-900">
+              نوصل من أشهر المتاجر العالمية
+            </h2>
+            <p className="text-base md:text-lg text-gray-600">
+              اختر من ملايين المنتجات من متاجرك المفضلة 🛍️
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 max-w-5xl mx-auto">
+            {stores.map((store, idx) => {
+              const Icon = store.icon;
+              return (
+                <div 
+                  key={idx} 
+                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 border-2 border-gray-100 hover:border-primary-200 group cursor-pointer"
+                >
+                  {/* Icon with Gradient Background */}
+                  <div className={`${store.color} w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform`}>
+                    <Icon className="text-white text-3xl" />
+                  </div>
+                  
+                  {/* Store Name */}
+                  <h3 className="font-bold text-base md:text-lg text-gray-900 text-center mb-1">
+                    {store.name}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p className="text-xs md:text-sm text-gray-500 text-center">
+                    {store.desc}
+                  </p>
                 </div>
-              ))}
+              );
+            })}
+          </div>
+
+          {/* More Stores Badge */}
+          <div className="text-center mt-8">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-50 to-secondary-50 border-2 border-primary-200 px-6 py-3 rounded-full text-primary-700 font-semibold">
+              <FiGlobe />
+              <span>+ أي متجر عالمي آخر</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-200 to-purple-200 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full blur-3xl"></div>
+      {/* Features - Why Choose Us */}
+      <section className="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-gray-100">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-4xl font-bold mb-3 text-gray-900">
+              ليش تختار أوليفيا شيب؟
+            </h2>
+            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto">
+              نوفر لك تجربة تسوق سهلة وآمنة من المتاجر العالمية 💎
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+            {features.map((feature, idx) => {
+              const Icon = feature.icon;
+              return (
+                <div 
+                  key={idx} 
+                  className={`${feature.bg} rounded-2xl p-6 border-2 border-gray-200 hover:border-primary-300 transition-all hover:shadow-lg group`}
+                >
+                  {/* Icon */}
+                  <div className={`w-14 h-14 ${feature.color} bg-white rounded-xl flex items-center justify-center mb-4 shadow-md group-hover:scale-110 transition-transform`}>
+                    <Icon className="text-2xl" />
+                  </div>
+                  
+                  {/* Title */}
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    {feature.title}
+                  </h3>
+                  
+                  {/* Description */}
+                  <p className="text-sm text-gray-600 leading-relaxed">
+                    {feature.desc}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Additional Benefits */}
+          <div className="mt-12 max-w-4xl mx-auto">
+            <div className="bg-white rounded-2xl p-8 shadow-xl border-2 border-gray-100">
+              <h3 className="text-xl font-bold text-gray-900 mb-6 text-center">
+                مميزات إضافية تجعلنا الأفضل ⭐
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  'حساب تلقائي شامل لجميع التكاليف',
+                  'تتبع كامل لطلبك من الشراء حتى التوصيل',
+                  'أسعار شفافة بدون رسوم مخفية',
+                  'دفع عند الاستلام متاح',
+                  'ضمان استرجاع الأموال',
+                  'دعم عملاء محترف 24/7',
+                ].map((benefit, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">
+                    <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                      <FiCheck className="text-white text-sm" />
+                    </div>
+                    <p className="text-sm md:text-base font-medium text-gray-700">{benefit}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
+      </section>
+
+      {/* CTA Section - Strong & Clear */}
+      <section className="py-16 md:py-24 bg-gradient-to-br from-primary-600 via-primary-500 to-secondary-600 text-white relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+        </div>
+        
         <div className="container mx-auto px-4 text-center relative z-10">
-          <h2 className="text-xl md:text-2xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-400 to-pink-600 bg-clip-text text-transparent">جاهز لطلب منتجاتك؟</h2>
-          <p className="text-sm md:text-base mb-6 text-gray-700 max-w-2xl mx-auto">
-            ابدأ الآن واطلب منتجاتك من المتاجر العالمية بسهولة وأمان
-          </p>
-          <Link to="/cart" className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 text-white hover:from-blue-500 hover:via-purple-500 hover:to-pink-500 text-sm md:text-base px-6 py-3 rounded-xl inline-flex items-center justify-center gap-2 transition-all shadow-lg hover:shadow-xl hover:scale-105">
-            <FaShoppingCart />
-            اذهب إلى السلة
-          </Link>
+          <div className="max-w-3xl mx-auto">
+            {/* Icon */}
+            <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6">
+              <FaShoppingCart className="text-4xl text-white" />
+            </div>
+
+            {/* Heading */}
+            <h2 className="text-3xl md:text-5xl font-bold mb-4 leading-tight">
+              جاهز لبدء التسوق؟
+            </h2>
+            
+            {/* Description */}
+            <p className="text-lg md:text-xl mb-8 text-white/90 leading-relaxed">
+              ابدأ الآن واطلب منتجاتك المفضلة من أي متجر عالمي
+              <br />
+              <span className="font-bold text-yellow-300">نوصلها لك بسرعة وأمان! 🚀</span>
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+              <Link 
+                to="/cart" 
+                className="bg-white text-primary-600 hover:bg-gray-50 text-lg md:text-xl font-bold px-10 py-5 rounded-2xl inline-flex items-center justify-center gap-3 transition-all shadow-2xl hover:shadow-3xl hover:scale-105 group"
+              >
+                <FiShoppingBag className="text-2xl group-hover:rotate-12 transition-transform" />
+                ابدأ التسوق الآن
+                <FiArrowLeft className="text-2xl group-hover:-translate-x-1 transition-transform" />
+              </Link>
+              <Link 
+                to="/about" 
+                className="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border-2 border-white/30 text-lg md:text-xl font-semibold px-10 py-5 rounded-2xl inline-flex items-center justify-center gap-3 transition-all"
+              >
+                اعرف أكثر عنا
+              </Link>
+            </div>
+
+            {/* Trust Badges */}
+            <div className="flex flex-wrap items-center justify-center gap-8 text-sm md:text-base text-white/80 pt-8 border-t border-white/20">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-green-400 rounded-full flex items-center justify-center">
+                  <FiCheck className="text-white" />
+                </div>
+                <span>توصيل مضمون</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-blue-400 rounded-full flex items-center justify-center">
+                  <FiShield className="text-white" />
+                </div>
+                <span>دفع آمن</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
+                  <FiStar className="text-white" />
+                </div>
+                <span>خدمة ممتازة</span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
     </div>
