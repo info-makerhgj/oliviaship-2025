@@ -1,0 +1,74 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient (optional) -->
+  <rect width="120" height="120" rx="20" fill="url(#gradientBg)" opacity="0.1"/>
+  
+  <!-- Shopping Bag -->
+  <g transform="translate(60, 60)">
+    <!-- Bag Body -->
+    <path d="M -24 -18 L -24 24 L 24 24 L 24 -18 Q 24 -22 21 -22 L -21 -22 Q -24 -22 -24 -18 Z" 
+          stroke="url(#gradient1)" 
+          stroke-width="5" 
+          fill="none" 
+          stroke-linecap="round" 
+          stroke-linejoin="round"/>
+    
+    <!-- Bag Handles -->
+    <path d="M -18 -22 Q -18 -30 -12 -30 Q -6 -30 -6 -22" 
+          stroke="url(#gradient1)" 
+          stroke-width="5" 
+          fill="none" 
+          stroke-linecap="round"/>
+    <path d="M 18 -22 Q 18 -30 12 -30 Q 6 -30 6 -22" 
+          stroke="url(#gradient1)" 
+          stroke-width="5" 
+          fill="none" 
+          stroke-linecap="round"/>
+    
+    <!-- Bag Bottom Curve -->
+    <path d="M -21 24 Q 0 27 21 24" 
+          stroke="url(#gradient1)" 
+          stroke-width="3" 
+          fill="none" 
+          stroke-linecap="round"/>
+  </g>
+  
+  <!-- Magnifying Glass Overlapping Bag -->
+  <g transform="translate(60, 60)">
+    <!-- Magnifying Glass Circle -->
+    <circle cx="-9" cy="-6" r="18" 
+            stroke="#1f2937" 
+            stroke-width="4" 
+            fill="white" 
+            opacity="0.95"/>
+    
+    <!-- Magnifying Glass Handle -->
+    <line x1="6" y1="3" x2="18" y2="15" 
+          stroke="#1f2937" 
+          stroke-width="4" 
+          stroke-linecap="round"/>
+    
+    <!-- Glass Reflection -->
+    <circle cx="-12" cy="-9" r="5" 
+            fill="url(#gradient2)" 
+            opacity="0.3"/>
+    
+    <!-- Small detail inside glass -->
+    <circle cx="-9" cy="-6" r="2" 
+            fill="url(#gradient1)"/>
+  </g>
+  
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d946ef;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#d946ef;stop-opacity:0.5" />
+    </linearGradient>
+    <linearGradient id="gradientBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d946ef;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

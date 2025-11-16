@@ -1,0 +1,77 @@
+<svg width="400" height="120" viewBox="0 0 400 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shopping Bag with Magnifying Glass Icon -->
+  <g transform="translate(60, 60)">
+    <!-- Shopping Bag -->
+    <g>
+      <!-- Bag Body -->
+      <path d="M -25 -18 L -25 25 L 25 25 L 25 -18 Q 25 -22 22 -22 L -22 -22 Q -25 -22 -25 -18 Z" 
+            stroke="url(#gradient1)" 
+            stroke-width="4" 
+            fill="none" 
+            stroke-linecap="round" 
+            stroke-linejoin="round"/>
+      
+      <!-- Bag Handles -->
+      <path d="M -18 -22 Q -18 -31 -11 -31 Q -4 -31 -4 -22" 
+            stroke="url(#gradient1)" 
+            stroke-width="4" 
+            fill="none" 
+            stroke-linecap="round"/>
+      <path d="M 18 -22 Q 18 -31 11 -31 Q 4 -31 4 -22" 
+            stroke="url(#gradient1)" 
+            stroke-width="4" 
+            fill="none" 
+            stroke-linecap="round"/>
+      
+      <!-- Bag Bottom -->
+      <path d="M -22 25 Q 0 28 22 25" 
+            stroke="url(#gradient1)" 
+            stroke-width="3" 
+            fill="none" 
+            stroke-linecap="round"/>
+    </g>
+    
+    <!-- Magnifying Glass -->
+    <g>
+      <!-- Glass Circle -->
+      <circle cx="-9" cy="-6" r="15" 
+              stroke="#1f2937" 
+              stroke-width="3" 
+              fill="white" 
+              opacity="0.95"/>
+      
+      <!-- Handle -->
+      <line x1="3" y1="3" x2="15" y2="15" 
+            stroke="#1f2937" 
+            stroke-width="3" 
+            stroke-linecap="round"/>
+      
+      <!-- Reflection -->
+      <circle cx="-12" cy="-9" r="4" 
+              fill="url(#gradient2)" 
+              opacity="0.3"/>
+    </g>
+  </g>
+  
+  <!-- Text: أوليفيا شيب -->
+  <text x="140" y="50" font-family="'Cairo', 'Arial', sans-serif" font-size="32" font-weight="bold" fill="url(#gradient1)">
+    أوليفيا شيب
+  </text>
+  <text x="140" y="80" font-family="'Cairo', 'Arial', sans-serif" font-size="16" fill="#6b7280">
+    Olivia Ship
+  </text>
+  
+  <!-- Decorative line -->
+  <line x1="140" y1="90" x2="380" y2="90" stroke="url(#gradient1)" stroke-width="2" opacity="0.3"/>
+  
+  <defs>
+    <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d946ef;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#d946ef;stop-opacity:0.5" />
+    </linearGradient>
+  </defs>
+</svg>

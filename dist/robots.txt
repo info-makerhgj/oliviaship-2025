@@ -1,0 +1,10 @@
+# Robots.txt for Olivia Ship
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /agent/
+Disallow: /pos/
+Disallow: /api/
+
+Sitemap: https://oliviaship.com/sitemap.xml
