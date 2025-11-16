@@ -9,7 +9,7 @@ OliviaShip-Mobile-App/node_modules/
 .env.production
 
 # Build outputs
-dist/
+# dist/ - نحتاج dist للـ deployment
 build/
 *.log
 
