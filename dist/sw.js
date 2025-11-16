@@ -78,154 +78,154 @@ define(['./workbox-47da91e0'], (function (workbox) { 'use strict';
    * See https://goo.gl/S9QRab
    */
   workbox.precacheAndRoute([{
-    "url": "assets/AboutPage-BQW4SMCM.js",
+    "url": "assets/AboutPage-Dx33qmxc.js",
     "revision": null
   }, {
-    "url": "assets/AdminChat-MjQXeNrL.js",
+    "url": "assets/AdminChat-4HJAqNSR.js",
     "revision": null
   }, {
-    "url": "assets/AgentCommissions-6ES-aWPF.js",
+    "url": "assets/AgentCommissions-DW-tTDZX.js",
     "revision": null
   }, {
-    "url": "assets/AgentCustomers-DDtjwEjn.js",
+    "url": "assets/AgentCustomers-EdUaZZKH.js",
     "revision": null
   }, {
-    "url": "assets/AgentDashboard-DlleGFGd.js",
+    "url": "assets/AgentDashboard-BGi35EwS.js",
     "revision": null
   }, {
-    "url": "assets/AgentOrders-XvJYFDBI.js",
+    "url": "assets/AgentOrders-BBfqWHpc.js",
     "revision": null
   }, {
-    "url": "assets/AgentPayments-DW1gB7gO.js",
+    "url": "assets/AgentPayments-CYnQeJUJ.js",
     "revision": null
   }, {
-    "url": "assets/Agents-B5d5MV4W.js",
+    "url": "assets/Agents-y1FUgou3.js",
     "revision": null
   }, {
-    "url": "assets/CartPage-CT2qGFnA.js",
+    "url": "assets/CartPage-DwHh_tQw.js",
     "revision": null
   }, {
     "url": "assets/chart-vendor-B8xsdVR1.js",
     "revision": null
   }, {
-    "url": "assets/Chat-1DgAjDgy.js",
+    "url": "assets/Chat-BuaqQkHy.js",
     "revision": null
   }, {
-    "url": "assets/ConfirmationModal-BYm3FAaV.js",
+    "url": "assets/ConfirmationModal-CSfngUgU.js",
     "revision": null
   }, {
-    "url": "assets/ContactMessages-CJEqc_yq.js",
+    "url": "assets/ContactMessages-IQm0nZKk.js",
     "revision": null
   }, {
-    "url": "assets/ContactPage-CAj4yPIF.js",
+    "url": "assets/ContactPage-BVblsquY.js",
     "revision": null
   }, {
-    "url": "assets/ContactReplies-BtrsTiHM.js",
+    "url": "assets/ContactReplies-CfORVSjv.js",
     "revision": null
   }, {
-    "url": "assets/CookiesPage-CADUK9D8.js",
+    "url": "assets/CookiesPage-BsyPIP2T.js",
     "revision": null
   }, {
-    "url": "assets/Coupons-DPclsean.js",
+    "url": "assets/Coupons-nCgrlkKu.js",
     "revision": null
   }, {
-    "url": "assets/Dashboard-Badd45eW.js",
+    "url": "assets/Dashboard-BC27agKc.js",
     "revision": null
   }, {
-    "url": "assets/Dashboard-BPshA9AU.js",
+    "url": "assets/Dashboard-C_MpZZPJ.js",
     "revision": null
   }, {
     "url": "assets/helpers-B6CJClH3.js",
     "revision": null
   }, {
-    "url": "assets/HomePage-j0sLD96Z.js",
+    "url": "assets/HomePage-D8NUpE-c.js",
     "revision": null
   }, {
     "url": "assets/icons-DYE8NDaX.js",
     "revision": null
   }, {
-    "url": "assets/index-Ctx_GovF.js",
+    "url": "assets/index-b47YYOPl.js",
     "revision": null
   }, {
     "url": "assets/index-DZ3G8Qja.css",
     "revision": null
   }, {
-    "url": "assets/Invoices-C1wihsNw.js",
+    "url": "assets/Invoices-DC2nM49D.js",
     "revision": null
   }, {
-    "url": "assets/LoginPage-D1uYzsKR.js",
+    "url": "assets/LoginPage-DDVwMhl_.js",
     "revision": null
   }, {
-    "url": "assets/MyOrders-DE8vvRHW.js",
+    "url": "assets/MyOrders-BjTkefx-.js",
     "revision": null
   }, {
-    "url": "assets/OrderDetails-DiIaGKyz.js",
+    "url": "assets/OrderDetails-BiTM5i-X.js",
     "revision": null
   }, {
-    "url": "assets/OrderPage-BytNhRdP.js",
+    "url": "assets/OrderPage-A_FC1IdJ.js",
     "revision": null
   }, {
-    "url": "assets/Orders-3YYzwyWJ.js",
+    "url": "assets/Orders-DixR5YmF.js",
     "revision": null
   }, {
-    "url": "assets/Payments-CE-GCmnU.js",
+    "url": "assets/Payments-BoohZTQm.js",
     "revision": null
   }, {
-    "url": "assets/PointDashboard-86zuNXIj.js",
+    "url": "assets/PointDashboard-BdX7q4mR.js",
     "revision": null
   }, {
-    "url": "assets/PointManagerRedirect-DThPKMrd.js",
+    "url": "assets/PointManagerRedirect-C8P8PuMu.js",
     "revision": null
   }, {
-    "url": "assets/PointsOfSale-1qU3pVeU.js",
+    "url": "assets/PointsOfSale-DtnagVBp.js",
     "revision": null
   }, {
-    "url": "assets/PointsPage-uzTgGFF8.js",
+    "url": "assets/PointsPage-Bijuwe0p.js",
     "revision": null
   }, {
-    "url": "assets/PrivacyPage-DMwZBG_V.js",
+    "url": "assets/PrivacyPage-IlDjSuXn.js",
     "revision": null
   }, {
-    "url": "assets/ProfilePage-BC8PmHUP.js",
+    "url": "assets/ProfilePage-BGpJz6DJ.js",
     "revision": null
   }, {
     "url": "assets/react-vendor-DBmefE3i.js",
     "revision": null
   }, {
-    "url": "assets/RegisterPage-D8jCV9Iu.js",
+    "url": "assets/RegisterPage-RquNc29N.js",
     "revision": null
   }, {
-    "url": "assets/Reports-BoWqvnEL.js",
+    "url": "assets/Reports-CAG-B-2y.js",
     "revision": null
   }, {
-    "url": "assets/Roles-Caj_SLmK.js",
+    "url": "assets/Roles--42qsqe4.js",
     "revision": null
   }, {
-    "url": "assets/Settings-BP2EAs0-.js",
+    "url": "assets/Settings-DYKUsFuW.js",
     "revision": null
   }, {
-    "url": "assets/StoresPage-CgUIwgVC.js",
+    "url": "assets/StoresPage-DS20chmh.js",
     "revision": null
   }, {
-    "url": "assets/TermsPage-BXDv5fRE.js",
+    "url": "assets/TermsPage-Jh9obQwK.js",
     "revision": null
   }, {
-    "url": "assets/TrackingPage-DWzncIYy.js",
+    "url": "assets/TrackingPage-QUS35q6g.js",
     "revision": null
   }, {
-    "url": "assets/Users-C-JWz4Rs.js",
+    "url": "assets/Users-DsmDOa0i.js",
     "revision": null
   }, {
     "url": "assets/utils-CZ_YNEkO.js",
     "revision": null
   }, {
-    "url": "assets/WalletCodes-DVA5RMyy.js",
+    "url": "assets/WalletCodes-rSG1fDhd.js",
     "revision": null
   }, {
-    "url": "assets/WalletPage-ecyF5tHG.js",
+    "url": "assets/WalletPage-B7YTH7h5.js",
     "revision": null
   }, {
-    "url": "assets/Wallets-CasGL469.js",
+    "url": "assets/Wallets-DNa7kKiQ.js",
     "revision": null
   }, {
     "url": "assets/workbox-window.prod.es5-DMXp7Fa7.js",
@@ -238,7 +238,7 @@ define(['./workbox-47da91e0'], (function (workbox) { 'use strict';
     "revision": "fb3b0ba4c529ea91233d892bae8eba7c"
   }, {
     "url": "index.html",
-    "revision": "02df28ff16d9e2a50dd9be2c14408e50"
+    "revision": "16c92a9995ded86297a9430ef998ab74"
   }, {
     "url": "logo-simple.svg",
     "revision": "e534b6aa5fa8881c75321e817cf986bf"
